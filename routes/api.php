@@ -14,12 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::get('/auth/google/redirect', [AuthController::class, 'redirectGoogle']);
 
 Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
 
-Route::get("/logout", [AuthController::class, "logout"]);
+Route::get("/logout", [AuthController::class, "logout"])->middleware(["auth:sanctum"]);

@@ -33,23 +33,27 @@ class AuthController extends Controller
                 'google_refresh_token' => $socialUser->refreshToken,
             ]);
 
+            //Token for API and User Credentials
             $token = $user->createToken($user->name)->plainTextToken;
-
             $data = [
                 'user' => $user,
                 'token' => $token
             ];
+
+            //Encode data Token API
             $json_data = json_encode($data);
 
             return redirect('http://127.0.0.1:8000/login/google/callback?token=' . urlencode($json_data));
         }
 
+        //Token for API and User Credentials
         $token = $user->createToken($user->name)->plainTextToken;
-
         $data = [
             'user' => $user,
             'token' => $token
         ];
+
+        //Encode data Token API
         $json_data = json_encode($data);
 
         return redirect('http://127.0.0.1:8000/login/google/callback?token=' . urlencode($json_data));
@@ -57,22 +61,22 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        // $user = Auth::user();
-        // $username = $request->user()->username;
+        $username = $request->user()->name;
 
-        // // Revoke current user's token
-        // $user->currentAccessToken()->delete();
+        // Revoke current user API Token
+        $request->user()->currentAccessToken()->delete();
+        // $request->user()->tokens()->where('id', $request->user()->currentAccessToken()->id)->delete();
 
-        // // // Perform socialite logout if applicable
-        // // if ($user->provider_id !== null) {
-        // //     $provider = $user->provider_name;
-        // //     $request->session()->forget("socialite.{$provider}");
-        // // }
+        // // Perform socialite logout if applicable
+        // if ($user->provider_id !== null) {
+        //     $provider = $user->provider_name;
+        //     $request->session()->forget("socialite.{$provider}");
+        // }
 
-        // return response()->json([
-        //     "username" => $username,
-        //     'message' => 'Successfully logged out'
-        // ], 200);
+        return response()->json([
+            "username" => $username,
+            'message' => 'Successfully logged out'
+        ], 200);
     }
 
 

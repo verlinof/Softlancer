@@ -21,18 +21,25 @@ class AuthController extends Controller
         $token = $dataDecode["token"];
         $userData = $dataDecode["user"];
 
+        dd($token);
+
         //Find User and Session Login
         $user = User::where('id', $userData["id"])->first();
-        Session::put('bearer token', $token);
+        // Session::put('bearer token', $token);
         if ($user) {
             // Autentikasi berhasil
-            // $token = $user->createToken('Token Name')->accessToken;
             $user = Auth::login($user);
             return redirect("/");
         } else {
             // Autentikasi gagal
             return "Autentikasi gagal!";
         }
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect("http://127.0.0.1:8000/api/logout");
     }
 
     public function test()

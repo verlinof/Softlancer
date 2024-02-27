@@ -21,6 +21,8 @@ Route::get('/', function () {
 
 Route::get("/login", [AuthController::class, "login"]);
 
+Route::get("/logout", [AuthController::class, "logout"]);
+
 Route::get("/login/google/callback", [AuthController::class, "handleGoogleCallback"]);
 
 Route::get("/test", [AuthController::class, "test"]);
