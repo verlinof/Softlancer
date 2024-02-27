@@ -18,8 +18,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/auth/google/redirect', [AuthController::class, 'redirectGoogle']);
+Route::get('/auth/google/redirect', [AuthController::class, 'redirectGoogle']);
 
-Route::post('/auth/google/callback', [AuthController::class, 'googleCallback']);
+Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
 
-
+Route::get("/logout", [AuthController::class, "logout"]);
