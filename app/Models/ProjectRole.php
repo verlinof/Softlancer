@@ -9,6 +9,8 @@ class ProjectRole extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         "project_id",
         "role_id",

@@ -17,7 +17,9 @@ class ProjectRoleFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            "project_id" => fake()->numberBetween(1, 10),
+            "role_id" => fake()->numberBetween(1, 10),
+            "total_person" => fake()->numberBetween(1, 20),
         ];
     }
 }
