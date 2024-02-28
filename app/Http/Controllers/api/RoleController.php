@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\api;
 
-use App\Models\ProjectRole;
-use App\Http\Requests\StoreProjectRoleRequest;
-use App\Http\Requests\UpdateProjectRoleRequest;
+use App\Http\Controllers\Controller;
+use App\Models\Role;
+use App\Http\Requests\StoreRoleRequest;
+use App\Http\Requests\UpdateRoleRequest;
 
-class ProjectRoleController extends Controller
+class RoleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +28,7 @@ class ProjectRoleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProjectRoleRequest $request)
+    public function store(StoreRoleRequest $request)
     {
         //
     }
@@ -35,7 +36,7 @@ class ProjectRoleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ProjectRole $projectRole)
+    public function show(Role $role)
     {
         //
     }
@@ -43,7 +44,7 @@ class ProjectRoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ProjectRole $projectRole)
+    public function edit(Role $role)
     {
         //
     }
@@ -51,7 +52,7 @@ class ProjectRoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProjectRoleRequest $request, ProjectRole $projectRole)
+    public function update(UpdateRoleRequest $request, Role $role)
     {
         //
     }
@@ -59,7 +60,7 @@ class ProjectRoleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProjectRole $projectRole)
+    public function destroy(Role $role)
     {
         //
     }
