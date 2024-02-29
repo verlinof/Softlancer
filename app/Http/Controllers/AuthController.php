@@ -21,14 +21,13 @@ class AuthController extends Controller
         $token = $dataDecode["token"];
         $userData = $dataDecode["user"];
 
-        dd($token);
-
         //Find User and Session Login
         $user = User::where('id', $userData["id"])->first();
         // Session::put('bearer token', $token);
         if ($user) {
             // Autentikasi berhasil
             $user = Auth::login($user);
+
             return redirect("/");
         } else {
             // Autentikasi gagal

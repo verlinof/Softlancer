@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string("project_title");
             $table->string("project_description");
             $table->string("owner");
-            $table->enum("status", ["open", "closed"]);
+            $table->enum("status", ["open", "closed"])->default("open");
         });
     }
 

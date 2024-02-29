@@ -2,17 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\Refference;
+use App\Models\Application;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class RefferenceSeeder extends Seeder
+class ApplicationSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Refference::factory(5)->create();
+        Application::factory(5)->create();
     }
 }

@@ -17,7 +17,8 @@ class RefferenceFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            "user_id" => 1,
+            "role_id" => fake()->unique()->numberBetween(1, 10)
         ];
     }
 }
