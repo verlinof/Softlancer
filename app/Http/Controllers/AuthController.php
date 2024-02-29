@@ -10,7 +10,7 @@ class AuthController extends Controller
 {
     public function login()
     {
-        return redirect('http://127.0.0.1:8000/api/auth/google/redirect');
+        return redirect(env("API_URL") . 'auth/google/redirect');
     }
 
     public function handleGoogleCallback()
@@ -23,7 +23,7 @@ class AuthController extends Controller
 
         //Find User and Session Login
         $user = User::where('id', $userData["id"])->first();
-        // Session::put('bearer token', $token);
+        // Session::put('bearer token', $token);    
         if ($user) {
             // Autentikasi berhasil
             $user = Auth::login($user);
@@ -38,7 +38,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect("http://127.0.0.1:8000/api/logout");
+        return redirect(env("API_URL") . "logout");
     }
 
     public function test()
