@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProjectResource;
+use App\Models\Application;
 use App\Models\Project;
 use App\Models\ProjectRole;
 use Dotenv\Exception\ValidationException;
@@ -106,7 +107,74 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'project_title' => 'required|max:255',
+            'project_description' => 'required',
+            'owner' => 'required|max:255',
+            'roles' => 'required|array',
+            'roles.*' => 'exists:roles,id',
+            'total_person' => 'required|array',
+        ]);
+
+        try {
+            $project = Project::findOrFail($id);
+
+            // Update main project data
+            $project->update([
+                'project_title' => $request->project_title,
+                'project_description' => $request->project_description,
+                'owner' => $request->owner,
+            ]);
+
+            // Update or create project roles
+            $existingRoleIds = [];
+            for ($i = 0; $i < count($request->roles); $i++) {
+                $role_id = $request->roles[$i];
+                $total_person = $request->total_person[$i];
+
+                $existingRoleIds[] = $role_id;
+
+                $projectRole = ProjectRole::where('project_id', $project->id)
+                    ->where('role_id', $role_id)
+                    ->first();
+
+                if ($projectRole) {
+                    // Update existing project role
+                    $projectRole->update(['total_person' => $total_person]);
+                } else {
+                    // Create new project role
+                    ProjectRole::create([
+                        'project_id' => $project->id,
+                        'role_id' => $role_id,
+                        'total_person' => $total_person
+                    ]);
+                }
+            }
+
+            // Delete project roles that are not included in the updated roles
+            $projectRole = ProjectRole::where('project_id', $project->id)
+                ->whereNotIn('role_id', $existingRoleIds);
+
+            $projectRoleId = ProjectRole::where('project_id', $project->id)
+                ->whereNotIn('role_id', $existingRoleIds)
+                ->pluck('id');
+
+            // Delete Application terkait
+            Application::whereIn("project_role_id", $projectRoleId)
+                ->delete();
+            // Delete Project Role
+            $projectRole->delete();
+
+            return response()->json([
+                'message' => 'Project updated successfully',
+                'data' => $project,
+                'existingRoleId' => $existingRoleIds
+            ], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Project not found'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Internal Server Error', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function closeProject($id)
