@@ -196,7 +196,7 @@ class ProjectController extends Controller
                 "data" => $project
             ]);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Project not found'], 404);
+            return response()->json(['message' => 'Project not found: ' . $e->getMessage()], 404);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Internal Server Error'], 500);
         }
@@ -205,8 +205,25 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Project $project)
+    public function destroy($id)
     {
-        //
+        try {
+            $project = Project::findOrFail($id);
+            $project->delete();
+
+            return response()->json([
+                'message' => 'Project deleted successfully'
+            ], 200);
+        } catch (ModelNotFoundException $e) {
+            // Handle the case where the project with the specified ID does not exist
+            return response()->json([
+                'message' => 'Project not found: ' . $e->getMessage()
+            ], 404);
+        } catch (Exception $e) {
+            // Handle general exceptions
+            return response()->json([
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
