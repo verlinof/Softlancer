@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
+use Exception;
 
 class RoleController extends Controller
 {
@@ -14,7 +15,18 @@ class RoleController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $roles = Role::all();
+
+            return response()->json([
+                "data" => $roles
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

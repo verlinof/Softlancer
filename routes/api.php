@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\ProjectController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\api\RoleController;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -30,3 +30,6 @@ Route::get("/projects/close-project/{id}", [ProjectController::class, "closeProj
 //Update project details
 Route::patch("/projects/{id}", [ProjectController::class, "update"]);
 Route::delete("/projects/{id}", [ProjectController::class, "destroy"]);
+
+//Roles API
+Route::get("/roles", [RoleController::class, "index"]);
