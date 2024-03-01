@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('project_roles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->references('id')->on('projects');
+            $table->foreignId('project_id')->references('id')->on('projects')->onDelete('cascade');
             $table->foreignId('role_id')->references('id')->on('roles');
             $table->integer("total_person");
         });

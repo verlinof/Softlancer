@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('applications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users');
-            $table->foreignId('project_id')->references('id')->on('projects');
-            $table->foreignId("project_role_id")->references("id")->on("project_roles");
+            $table->foreignId('project_id')->references('id')->on('projects')->onDelete('cascade');
+            $table->foreignId("project_role_id")->references("id")->on("project_roles")->onDelete("cascade");
             $table->string("cv_file");
             $table->string("portofolio")->nullable();
             $table->string("application_role");

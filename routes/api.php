@@ -24,12 +24,15 @@ Route::get("/logout", [AuthController::class, "logout"])->middleware(["auth:sanc
 //Projects API
 Route::get("/projects", [ProjectController::class, "index"]);
 Route::get("/projects/{id}", [ProjectController::class, "show"]);
-Route::post("/projects", [ProjectController::class, "store"]);
-//To close project
-Route::get("/projects/close-project/{id}", [ProjectController::class, "closeProject"]);
-//Update project details
-Route::patch("/projects/{id}", [ProjectController::class, "update"]);
-Route::delete("/projects/{id}", [ProjectController::class, "destroy"]);
 
 //Roles API
 Route::get("/roles", [RoleController::class, "index"]);
+
+Route::middleware(['auth:sanctum'])->group(function () {
+  Route::post("/projects", [ProjectController::class, "store"]);
+  //To close project
+  Route::get("/projects/close-project/{id}", [ProjectController::class, "closeProject"]);
+  //Update project details
+  Route::patch("/projects/{id}", [ProjectController::class, "update"]);
+});
+Route::delete("/projects/{id}", [ProjectController::class, "destroy"]);
