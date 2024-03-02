@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Refference;
 use App\Http\Requests\StoreRefferenceRequest;
 use App\Http\Requests\UpdateRefferenceRequest;
+use App\Http\Resources\RefferenceResource;
+use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class RefferenceController extends Controller
 {
@@ -14,7 +17,32 @@ class RefferenceController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $refferences = Refference::all();
+            return RefferenceResource::collection($refferences->loadMissing("user:id,name,email", "role"));
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function showByUser()
+    {
+        try {
+            $user = Auth::user();
+            $refferences = Refference::where("user_id", $user->id)->get();
+
+            return response()->json([
+                RefferenceResource::collection($refferences->loadMissing("role")),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
