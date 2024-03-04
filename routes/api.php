@@ -40,4 +40,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
   //Refferences API
   Route::get("/refferences", [RefferenceController::class, "index"]);
   Route::get("/profile-refference", [RefferenceController::class, "showByUser"]);
+  Route::delete("/refferences/{id}", [RefferenceController::class, "destroy"]);
 });

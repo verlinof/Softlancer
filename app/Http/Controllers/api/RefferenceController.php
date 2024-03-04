@@ -8,6 +8,7 @@ use App\Http\Requests\StoreRefferenceRequest;
 use App\Http\Requests\UpdateRefferenceRequest;
 use App\Http\Resources\RefferenceResource;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 
 class RefferenceController extends Controller
@@ -46,33 +47,9 @@ class RefferenceController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreRefferenceRequest $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      */
     public function show(Refference $refference)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Refference $refference)
     {
         //
     }
@@ -88,8 +65,23 @@ class RefferenceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Refference $refference)
+    public function destroy($id)
     {
-        //
+        try {
+            $refference = Refference::findOrFail($id);
+            $refference->delete();
+
+            return response()->json([
+                'message' => 'Refference deleted successfully'
+            ], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Refference not found'
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to delete refference: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
