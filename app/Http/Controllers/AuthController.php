@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
@@ -26,9 +27,9 @@ class AuthController extends Controller
         // Session::put('bearer token', $token);    
         if ($user) {
             // Autentikasi berhasil
-            $user = Auth::login($user);
-
-            return redirect("/");
+            Auth::login($user);
+            return [$token, $user];
+            // return redirect("/");
         } else {
             // Autentikasi gagal
             return "Autentikasi gagal!";

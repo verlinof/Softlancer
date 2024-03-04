@@ -4,9 +4,12 @@ namespace App\Http\Controllers\api;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\UserDetailResource;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
+use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
@@ -28,15 +31,15 @@ class AuthController extends Controller
             ], [
                 'name' => $socialUser->name,
                 'email' => $socialUser->email,
-                'password' => Hash::make('password'),
                 'google_token' => $socialUser->token,
                 'google_refresh_token' => $socialUser->refreshToken,
+                'is_admin' => false
             ]);
 
             //Token for API and User Credentials
             $token = $user->createToken($user->name)->plainTextToken;
             $data = [
-                'user' => $user,
+                'user' => new UserDetailResource($user),
                 'token' => $token
             ];
 
@@ -49,7 +52,7 @@ class AuthController extends Controller
         //Token for API and User Credentials
         $token = $user->createToken($user->name)->plainTextToken;
         $data = [
-            'user' => $user,
+            'user' => new UserDetailResource($user),
             'token' => $token
         ];
 
@@ -65,13 +68,6 @@ class AuthController extends Controller
 
         // Revoke current user API Token
         $request->user()->currentAccessToken()->delete();
-        // $request->user()->tokens()->where('id', $request->user()->currentAccessToken()->id)->delete();
-
-        // // Perform socialite logout if applicable
-        // if ($user->provider_id !== null) {
-        //     $provider = $user->provider_name;
-        //     $request->session()->forget("socialite.{$provider}");
-        // }
 
         return response()->json([
             "username" => $username,
@@ -79,29 +75,60 @@ class AuthController extends Controller
         ], 200);
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function profile(Request $request)
     {
-        //
-    }
+        try {
+            $user = $request->user();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        //
+            return new UserDetailResource($user);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'User not found: ' . $e->getMessage()
+            ], 404);
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => 'Database Error: ' . $e->getMessage()
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request)
     {
-        //
+        try {
+            $user = $request->user();
+
+            $request->validate([
+                'phone_number' => 'required|max:255',
+            ]);
+
+            $user->update([
+                'phone_number' => $request->phone_number
+            ]);
+
+            return response()->json([
+                'message' => 'Successfully updated'
+            ], 200);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation Error: ' . $e->getMessage(),
+                'errors' => $e->errors()
+            ], 422);
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => 'Database Error: ' . $e->getMessage()
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

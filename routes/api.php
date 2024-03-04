@@ -17,12 +17,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Login API
 Route::get('/auth/google/redirect', [AuthController::class, 'redirectGoogle']);
-
 Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
-
-Route::get("/logout", [AuthController::class, "logout"])->middleware(["auth:sanctum"]);
-
 //Projects API
 Route::get("/projects", [ProjectController::class, "index"]);
 Route::get("/projects/{id}", [ProjectController::class, "show"]);
@@ -34,9 +31,12 @@ Route::get("/projects/close-project/{id}", [ProjectController::class, "closeProj
 Route::get("/roles", [RoleController::class, "index"]);
 //Project Role
 Route::get("/project-role/{projectId}", [ProjectRoleController::class, "showByProject"]);
-
 //Sanctum
 Route::middleware(['auth:sanctum'])->group(function () {
+  //User API
+  Route::get("/profile", [AuthController::class, "profile"]);
+  Route::patch("/update-user", [AuthController::class, "update"]);
+  Route::get("/logout", [AuthController::class, "logout"]);
   //Refferences API
   Route::get("/refferences", [RefferenceController::class, "index"]);
   Route::get("/profile-refference", [RefferenceController::class, "showByUser"]);

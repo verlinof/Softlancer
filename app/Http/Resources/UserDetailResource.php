@@ -17,7 +17,9 @@ class UserDetailResource extends JsonResource
         return [
             "id" => $this->id,
             "name" => $this->name,
-            "email" => $this->email
+            "email" => $this->email,
+            "phone_number" => $this->phone_number,
+            "is_admin" => $this->is_admin
         ];
     }
 }
