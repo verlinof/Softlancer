@@ -17,7 +17,6 @@ class Application extends Model
         "project_role_id",
         "cv_file",
         "portofolio",
-        "application_role",
         "status",
     ];
 

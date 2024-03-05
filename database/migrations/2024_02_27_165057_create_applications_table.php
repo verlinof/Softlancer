@@ -18,7 +18,6 @@ return new class extends Migration
             $table->foreignId("project_role_id")->references("id")->on("project_roles")->onDelete("cascade");
             $table->string("cv_file");
             $table->string("portofolio")->nullable();
-            $table->string("application_role");
             $table->enum("status", ["waiting", "approve", "decline"])->default("waiting");
         });
     }
