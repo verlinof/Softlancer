@@ -23,10 +23,6 @@ Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
 //Projects API
 Route::get("/projects", [ProjectController::class, "index"]);
 Route::get("/projects/{id}", [ProjectController::class, "show"]);
-Route::post("/projects", [ProjectController::class, "store"]);
-Route::patch("/projects/{id}", [ProjectController::class, "update"]);
-Route::delete("/projects/{id}", [ProjectController::class, "destroy"]);
-Route::get("/projects/close-project/{id}", [ProjectController::class, "closeProject"]);
 //Roles API
 Route::get("/roles", [RoleController::class, "index"]);
 //Project Role
@@ -41,4 +37,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
   Route::get("/refferences", [RefferenceController::class, "index"]);
   Route::get("/profile-refference", [RefferenceController::class, "showByUser"]);
   Route::delete("/refferences/{id}", [RefferenceController::class, "destroy"]);
+  //Projects API
+  Route::post("/projects", [ProjectController::class, "store"]);
+  Route::patch("/projects/{id}", [ProjectController::class, "update"]);
+  Route::delete("/projects/{id}", [ProjectController::class, "destroy"]);
+  Route::get("/projects/close-project/{id}", [ProjectController::class, "closeProject"]);
 });
