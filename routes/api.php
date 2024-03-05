@@ -26,7 +26,7 @@ Route::get("/projects/{id}", [ProjectController::class, "show"]);
 //Roles API
 Route::get("/roles", [RoleController::class, "index"]);
 //Project Role
-Route::get("/project-role/{projectId}", [ProjectRoleController::class, "showByProject"]);
+Route::get("/project-role", [ProjectRoleController::class, "show"]);
 //Sanctum
 Route::middleware(['auth:sanctum'])->group(function () {
   //User API

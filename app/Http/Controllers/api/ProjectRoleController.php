@@ -7,6 +7,7 @@ use App\Models\ProjectRole;
 use App\Http\Requests\StoreProjectRoleRequest;
 use App\Http\Requests\UpdateProjectRoleRequest;
 use App\Http\Resources\ProjectRoleResource;
+use App\Models\Project;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
@@ -17,17 +18,24 @@ class ProjectRoleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function showByProject($projectId, Request $request)
+    public function show(Request $request)
     {
         try {
-            $showProject = $request->query('showProject', false);
+            $projectId = $request->query('projectId', 0);
+            $projecRoleId = $request->query('projectRoleId', 0);
 
-            $projectRoles = ProjectRole::where("project_id", $projectId)->get();
+            if ($projectId != 0 && $projecRoleId == 0) {
+                $project = Project::findOrFail($projectId);
+                $projectRoles = ProjectRole::where("project_id", $projectId)->get();
 
-            if ($showProject) {
-                return ProjectRoleResource::collection($projectRoles->loadMissing("role", "project"));
-            } else {
                 return ProjectRoleResource::collection($projectRoles->loadMissing("role"));
+            } else if ($projectId == 0 && $projecRoleId != 0) {
+                $projectRole = ProjectRole::findOrFail($projecRoleId);
+                return new ProjectRoleResource($projectRole->loadMissing("role", "project"));
+            } else {
+                return response()->json([
+                    'message' => 'Only projectId or projectRoleId can be used'
+                ], 400);
             }
         } catch (ModelNotFoundException $e) {
             return response()->json([
