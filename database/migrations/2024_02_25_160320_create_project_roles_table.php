@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('project_id')->references('id')->on('projects')->onDelete('cascade');
             $table->foreignId('role_id')->references('id')->on('roles');
-            $table->integer("total_person");
+            $table->integer("accepted_person")->default(0);
+            $table->integer("max_person");
         });
     }
 

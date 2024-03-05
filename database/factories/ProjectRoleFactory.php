@@ -19,7 +19,8 @@ class ProjectRoleFactory extends Factory
         return [
             "project_id" => fake()->numberBetween(1, 10),
             "role_id" => fake()->numberBetween(1, 10),
-            "total_person" => fake()->numberBetween(1, 20),
+            "accepted_person" => 0,
+            "max_person" => fake()->numberBetween(1, 20),
         ];
     }
 }

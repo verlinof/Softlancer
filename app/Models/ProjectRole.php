@@ -14,7 +14,8 @@ class ProjectRole extends Model
     protected $fillable = [
         "project_id",
         "role_id",
-        "total_person"
+        "accepted_person",
+        "max_person"
     ];
 
     public function project()

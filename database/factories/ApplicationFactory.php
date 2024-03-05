@@ -31,7 +31,6 @@ class ApplicationFactory extends Factory
             "project_role_id" => $projectRoleId,
             "cv_file" => $this->faker->word,
             "portofolio" => $this->faker->word,
-            "application_role" => $this->faker->word,
         ];
     }
 }

@@ -47,7 +47,7 @@ class ProjectController extends Controller
                 'owner' => 'required|max:255',
                 'roles' => 'required|array',
                 'roles.*' => 'exists:roles,id', // Ensure each project role ID exists in the project_roles table
-                'total_person' => 'required|array',
+                'max_person' => 'required|array',
             ]);
 
             // Create the project
@@ -56,12 +56,12 @@ class ProjectController extends Controller
             // Attach project roles with total_person
             for ($i = 0; $i < count($request->roles); $i++) {
                 $role_id = $request->roles[$i];
-                $total_person = $request->total_person[$i];
+                $max_person = $request->max_person[$i];
 
                 ProjectRole::create([
                     'project_id' => $project->id,
                     'role_id' => $role_id,
-                    'total_person' => $total_person
+                    'max_person' => $max_person
                 ]);
             }
 
@@ -113,7 +113,7 @@ class ProjectController extends Controller
             'owner' => 'required|max:255',
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,id',
-            'total_person' => 'required|array',
+            'max_person' => 'required|array',
         ]);
 
         try {
@@ -130,7 +130,7 @@ class ProjectController extends Controller
             $existingRoleIds = [];
             for ($i = 0; $i < count($request->roles); $i++) {
                 $role_id = $request->roles[$i];
-                $total_person = $request->total_person[$i];
+                $max_person = $request->max_person[$i];
 
                 $existingRoleIds[] = $role_id;
 
@@ -140,13 +140,13 @@ class ProjectController extends Controller
 
                 if ($projectRole) {
                     // Update existing project role
-                    $projectRole->update(['total_person' => $total_person]);
+                    $projectRole->update(['max_person' => $max_person]);
                 } else {
                     // Create new project role
                     ProjectRole::create([
                         'project_id' => $project->id,
                         'role_id' => $role_id,
-                        'total_person' => $total_person
+                        'max_person' => $max_person
                     ]);
                 }
             }
@@ -197,7 +197,7 @@ class ProjectController extends Controller
             ]);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Project not found: ' . $e->getMessage()], 404);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['message' => 'Internal Server Error'], 500);
         }
     }
