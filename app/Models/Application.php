@@ -34,4 +34,16 @@ class Application extends Model
     {
         return $this->belongsTo(ProjectRole::class, "project_role_id");
     }
+
+    public function role()
+    {
+        return $this->hasOneThrough(
+            Role::class,
+            ProjectRole::class,
+            "id",
+            "id",
+            "project_role_id",
+            "role_id"
+        );
+    }
 }

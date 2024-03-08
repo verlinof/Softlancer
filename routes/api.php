@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\ApplicationController;
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\ProjectController;
 use App\Http\Controllers\api\ProjectRoleController;
@@ -25,8 +26,10 @@ Route::get("/projects", [ProjectController::class, "index"]);
 Route::get("/projects/{id}", [ProjectController::class, "show"]);
 //Roles API
 Route::get("/roles", [RoleController::class, "index"]);
-//Project Role
-Route::get("/project-role", [ProjectRoleController::class, "show"]);
+//ProjectRole API
+Route::get("/project-roles", [ProjectRoleController::class, "show"]);
+//Application API
+Route::get("/applications", [ApplicationController::class, "show"]);
 //Sanctum
 Route::middleware(['auth:sanctum'])->group(function () {
   //User API
@@ -35,7 +38,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
   Route::get("/logout", [AuthController::class, "logout"]);
   //Refferences API
   Route::get("/refferences", [RefferenceController::class, "index"]);
-  Route::get("/profile-refference", [RefferenceController::class, "showByUser"]);
+  Route::get("/profile-refferences", [RefferenceController::class, "showByUser"]);
   Route::delete("/refferences/{id}", [RefferenceController::class, "destroy"]);
   //Projects API
   Route::post("/projects", [ProjectController::class, "store"]);
