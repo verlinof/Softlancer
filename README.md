@@ -39,6 +39,7 @@ php artisan serve --port=9000
 6. Run the Seeder
 
 ```
+php artisan db:seed --class=CompanySeeder
 php artisan db:seed --class=ProjectSeeder
 php artisan db:seed --class=RoleSeeder
 php artisan db:seed --class=ProjectRoleSeeder
