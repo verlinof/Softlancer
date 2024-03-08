@@ -24,7 +24,8 @@ class ProjectController extends Controller
             $projects = Project::paginate(5);
 
             return response()->json([
-                "data" => $projects
+                "message" => "Success",
+                "data" => ProjectResource::collection($projects->loadMissing('company')),
             ], 200);
         } catch (Exception $e) {
             return response()->json([
@@ -42,16 +43,16 @@ class ProjectController extends Controller
         try {
             // Validate the request
             $request->validate([
+                'company_id' => 'required|exists:companies,id',
                 'project_title' => 'required|max:255',
                 'project_description' => 'required',
-                'owner' => 'required|max:255',
                 'roles' => 'required|array',
                 'roles.*' => 'exists:roles,id', // Ensure each project role ID exists in the project_roles table
                 'max_person' => 'required|array',
             ]);
 
             // Create the project
-            $project = Project::create($request->only(['project_title', 'project_description', 'owner']));
+            $project = Project::create($request->only(['company_id', 'project_title', 'project_description']));
 
             // Attach project roles with total_person
             for ($i = 0; $i < count($request->roles); $i++) {
@@ -94,7 +95,10 @@ class ProjectController extends Controller
     {
         try {
             $project = Project::findOrFail($id);
-            return new ProjectResource($project);
+            return response()->json([
+                'message' => 'Project retrieved successfully',
+                'data' => new ProjectResource($project->loadMissing('company', 'projectRole.role')),
+            ]);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Project not found'], 404);
         } catch (Exception $e) {
@@ -108,9 +112,9 @@ class ProjectController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
+            'company_id' => 'required|exists:companies,id',
             'project_title' => 'required|max:255',
             'project_description' => 'required',
-            'owner' => 'required|max:255',
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,id',
             'max_person' => 'required|array',
@@ -121,9 +125,9 @@ class ProjectController extends Controller
 
             // Update main project data
             $project->update([
+                'company_id' => $request->company_id,
                 'project_title' => $request->project_title,
                 'project_description' => $request->project_description,
-                'owner' => $request->owner,
             ]);
 
             // Update or create project roles
@@ -183,9 +187,9 @@ class ProjectController extends Controller
             $project = Project::findOrFail($id);
             //Update the status to closed
             $project->update([
+                'company_id' => $project->company_id,
                 'project_title' => $project->project_title,
                 'project_description' => $project->project_description,
-                'owner' => $project->owner,
                 'status' => "closed"
             ]);
 
