@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('projects', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->references('id')->on('companies')->onDelete('cascade');
-            $table->string("project_title");
-            $table->text("project_description");
-            $table->enum("status", ["open", "closed"])->default("open");
+            $table->string('company_name');
+            $table->text('company_description');
+            $table->string('company_logo');
         });
     }
 
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('projects');
+        Schema::dropIfExists('companies');
     }
 };

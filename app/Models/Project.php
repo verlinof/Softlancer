@@ -12,14 +12,18 @@ class Project extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        "company_id",
         'project_title',
         'project_description',
-        'owner',
         'status'
     ];
 
     public function projectRole()
     {
         return $this->hasMany(projectRole::class);
+    }
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 }
