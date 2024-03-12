@@ -28,8 +28,6 @@ Route::get("/projects/{id}", [ProjectController::class, "show"]);
 Route::get("/roles", [RoleController::class, "index"]);
 //ProjectRole API
 Route::get("/project-roles", [ProjectRoleController::class, "show"]);
-//Application API
-Route::get("/applications", [ApplicationController::class, "show"]);
 //Sanctum
 Route::middleware(['auth:sanctum'])->group(function () {
   //User API
@@ -45,4 +43,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
   Route::patch("/projects/{id}", [ProjectController::class, "update"]);
   Route::delete("/projects/{id}", [ProjectController::class, "destroy"]);
   Route::get("/projects/close-project/{id}", [ProjectController::class, "closeProject"]);
+  //Application API
+  Route::get("/applications", [ApplicationController::class, "show"]);
+  Route::post("/applications", [ApplicationController::class, "store"]);
+  Route::get("/applications/handle/{id}", [ApplicationController::class, "handleApplication"]); //Untuk handle application
+  Route::patch("/applications/{id}", [ApplicationController::class, "update"]);
+  Route::delete("/applications/{id}", [ApplicationController::class, "destroy"]);
 });

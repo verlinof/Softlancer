@@ -13,7 +13,6 @@ class Application extends Model
 
     protected $fillable = [
         "user_id",
-        "project_id",
         "project_role_id",
         "cv_file",
         "portofolio",
@@ -27,7 +26,14 @@ class Application extends Model
 
     public function project()
     {
-        return $this->belongsTo(Project::class, "project_id");
+        return $this->hasOneThrough(
+            Project::class,
+            ProjectRole::class,
+            "id",
+            "id",
+            "project_role_id",
+            "project_id"
+        );
     }
 
     public function project_role()
