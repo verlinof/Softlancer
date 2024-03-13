@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\api\ApplicationController;
 use App\Http\Controllers\api\AuthController;
+use App\Http\Controllers\api\CompanyController;
 use App\Http\Controllers\api\ProjectController;
 use App\Http\Controllers\api\ProjectRoleController;
 use App\Http\Controllers\api\RefferenceController;
@@ -28,6 +29,9 @@ Route::get("/projects/{id}", [ProjectController::class, "show"]);
 Route::get("/roles", [RoleController::class, "index"]);
 //ProjectRole API
 Route::get("/project-roles", [ProjectRoleController::class, "show"]);
+//Company API
+Route::get("/company", [CompanyController::class, "index"]);
+Route::get("/company/{id}", [CompanyController::class, "show"]);
 //Sanctum
 Route::middleware(['auth:sanctum'])->group(function () {
   //User API
@@ -49,4 +53,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
   Route::get("/applications/handle/{id}", [ApplicationController::class, "handleApplication"]); //Untuk handle application
   Route::patch("/applications/{id}", [ApplicationController::class, "update"]);
   Route::delete("/applications/{id}", [ApplicationController::class, "destroy"]);
+  //Company API
+  Route::post("/company", [CompanyController::class, "store"]);
+  Route::patch("/company/{id}", [CompanyController::class, "update"]);
+  Route::delete("/company/{id}", [CompanyController::class, "destroy"]);
 });
