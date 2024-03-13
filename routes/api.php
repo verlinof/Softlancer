@@ -40,21 +40,27 @@ Route::middleware(['auth:sanctum'])->group(function () {
   Route::get("/logout", [AuthController::class, "logout"]);
   //Refferences API
   Route::get("/refferences", [RefferenceController::class, "index"]);
+  Route::post("/refferences", [RefferenceController::class, "store"]);
   Route::get("/profile-refferences", [RefferenceController::class, "showByUser"]);
   Route::delete("/refferences/{id}", [RefferenceController::class, "destroy"]);
-  //Projects API
-  Route::post("/projects", [ProjectController::class, "store"]);
-  Route::patch("/projects/{id}", [ProjectController::class, "update"]);
-  Route::delete("/projects/{id}", [ProjectController::class, "destroy"]);
-  Route::get("/projects/close-project/{id}", [ProjectController::class, "closeProject"]);
+  //Middleware Admin  
+  Route::middleware(['AdminAccess'])->group(function () {
+    //Projects API
+    Route::post("/projects", [ProjectController::class, "store"]);
+    Route::patch("/projects/{id}", [ProjectController::class, "update"]);
+    Route::delete("/projects/{id}", [ProjectController::class, "destroy"]);
+    Route::get("/projects/close-project/{id}", [ProjectController::class, "closeProject"]);
+    Route::get("/projects/open-project/{id}", [ProjectController::class, "openProject"]);
+    //Company API
+    Route::post("/company", [CompanyController::class, "store"]);
+    Route::patch("/company/{id}", [CompanyController::class, "update"]);
+    Route::delete("/company/{id}", [CompanyController::class, "destroy"]);
+    //Application API
+    Route::get("/applications/handle/{id}", [ApplicationController::class, "handleApplication"]); //Untuk handle application
+  });
   //Application API
   Route::get("/applications", [ApplicationController::class, "show"]);
   Route::post("/applications", [ApplicationController::class, "store"]);
-  Route::get("/applications/handle/{id}", [ApplicationController::class, "handleApplication"]); //Untuk handle application
   Route::patch("/applications/{id}", [ApplicationController::class, "update"]);
   Route::delete("/applications/{id}", [ApplicationController::class, "destroy"]);
-  //Company API
-  Route::post("/company", [CompanyController::class, "store"]);
-  Route::patch("/company/{id}", [CompanyController::class, "update"]);
-  Route::delete("/company/{id}", [CompanyController::class, "destroy"]);
 });

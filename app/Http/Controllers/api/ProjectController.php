@@ -206,6 +206,31 @@ class ProjectController extends Controller
         }
     }
 
+    public function openProject($id)
+    {
+        try {
+            $project = Project::findOrFail($id);
+            //Update the status to closed
+            $project->update([
+                'company_id' => $project->company_id,
+                'project_title' => $project->project_title,
+                'project_description' => $project->project_description,
+                'status' => "open"
+            ]);
+
+            //MASIH HARUS MIKIRIN BUAT NGIRIM EMAIL KE APPLICANT TERKAIT
+
+            return response()->json([
+                "message" => "Project Opened Successfully",
+                "data" => $project
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Project not found: ' . $e->getMessage()], 404);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Internal Server Error'], 500);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      */

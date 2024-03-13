@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateRefferenceRequest;
 use App\Http\Resources\RefferenceResource;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class RefferenceController extends Controller
@@ -41,6 +42,25 @@ class RefferenceController extends Controller
             return response()->json([
                 'message' => 'Internal Server Error',
                 'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            $request->validate([
+                'user_id' => 'required|exists:users,id',
+                'role_id' => 'required|exists:roles,id',
+            ]);
+            $refference = Refference::create($request->all());
+            return response()->json([
+                "message" => "Refference Created Successfully",
+                "data" => new RefferenceResource($refference),
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => "Internal Server Error"
             ], 500);
         }
     }

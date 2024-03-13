@@ -16,6 +16,8 @@ class RefferenceResource extends JsonResource
     {
         return [
             "id" => $this->id,
+            "role_id" => $this->role_id,
+            "user_id" => $this->user_id,
             "role" => $this->whenLoaded("role"),
             "user" => $this->whenLoaded("user"),
         ];
