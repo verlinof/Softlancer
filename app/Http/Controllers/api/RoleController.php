@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use Exception;
+use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
@@ -30,33 +31,32 @@ class RoleController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRoleRequest $request)
+    public function store(Request $request)
     {
-        //
+        try {
+            $validatedRequest = $request->validate([
+                'role' => 'required|string',
+            ]);
+            $role = Role::create($validatedRequest);
+
+            return response()->json([
+                "message" => "Role created successfully",
+                "data" => $role
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
      * Display the specified resource.
      */
     public function show(Role $role)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Role $role)
     {
         //
     }

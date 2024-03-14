@@ -27,6 +27,7 @@ Route::get("/projects", [ProjectController::class, "index"]);
 Route::get("/projects/{id}", [ProjectController::class, "show"]);
 //Roles API
 Route::get("/roles", [RoleController::class, "index"]);
+Route::post("/roles", [RoleController::class, "store"])->middleware(['auth:sanctum', 'AdminAccess']);
 //ProjectRole API
 Route::get("/project-roles", [ProjectRoleController::class, "show"]);
 //Company API
@@ -58,9 +59,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //Application API
     Route::get("/applications/handle/{id}", [ApplicationController::class, "handleApplication"]); //Untuk handle application
   });
+  //Middleware Application Owner check user->id == application->user_id
   //Application API
-  Route::get("/applications", [ApplicationController::class, "show"]);
+  Route::middleware(['ApplicationOwner'])->group(function () {
+    Route::patch("/applications/{id}", [ApplicationController::class, "update"]);
+    Route::delete("/applications/{id}", [ApplicationController::class, "destroy"]);
+  });
   Route::post("/applications", [ApplicationController::class, "store"]);
-  Route::patch("/applications/{id}", [ApplicationController::class, "update"]);
-  Route::delete("/applications/{id}", [ApplicationController::class, "destroy"]);
+  Route::get("/applications", [ApplicationController::class, "show"]);
 });
