@@ -4,14 +4,19 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProjectResource;
+use App\Jobs\ProjectNotificationJob;
 use App\Models\Application;
 use App\Models\Project;
 use App\Models\ProjectRole;
+use App\Models\Refference;
+use App\Models\Role;
+use App\Models\User;
 use Dotenv\Exception\ValidationException;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ProjectController extends Controller
 {
@@ -65,6 +70,12 @@ class ProjectController extends Controller
                     'max_person' => $max_person
                 ]);
             }
+
+            //Send Email
+            $references = Refference::whereIn('role_id', $request->roles)->pluck('user_id');
+            $user = User::whereIn('id', $references)->get();
+            $data = $user->pluck('id');
+            dispatch(new ProjectNotificationJob($data));
 
             return response()->json([
                 'message' => 'Project created successfully',
