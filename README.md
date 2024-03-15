@@ -46,3 +46,11 @@ php artisan db:seed --class=ProjectRoleSeeder
 php artisan db:seed --class=RefferenceSeeder
 php artisan db:seed --class=ApplicationSeeder
 ```
+
+7. Change the env with your Email to send the notification email
+
+8. Run the Job
+
+```
+php artisan queue:work
+```
