@@ -15,7 +15,7 @@ Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
 //Projects API
 Route::get("/projects", [ProjectController::class, "index"]);
 Route::get("/projects/{id}", [ProjectController::class, "show"]);
-Route::middleware(['auth:sanctum', 'AdminAccess'])->group(function () {
+Route::middleware(['auth:sanctum', 'AdminAccessAPI'])->group(function () {
   Route::post("/projects", [ProjectController::class, "store"]);
   Route::patch("/projects/{id}", [ProjectController::class, "update"]);
   Route::delete("/projects/{id}", [ProjectController::class, "destroy"]);
@@ -25,18 +25,18 @@ Route::middleware(['auth:sanctum', 'AdminAccess'])->group(function () {
 //Application API
 Route::middleware(['auth:sanctum'])->group(function () {
   //Middleware Application Owner check user->id == application->user_id
-  Route::middleware(['ApplicationOwner'])->group(function () {
+  Route::middleware(['ApplicationOwnerAPI'])->group(function () {
     Route::patch("/applications/{id}", [ApplicationController::class, "update"]);
     Route::delete("/applications/{id}", [ApplicationController::class, "destroy"]);
   });
-  Route::get("/applications/handle/{id}", [ApplicationController::class, "handleApplication"])->middleware(['AdminAccess']); //Untuk handle application
+  Route::get("/applications/handle/{id}", [ApplicationController::class, "handleApplication"])->middleware(['AdminAccessAPI']); //Untuk handle application
   Route::post("/applications", [ApplicationController::class, "store"]);
   Route::get("/applications", [ApplicationController::class, "show"]);
 });
 //Company API
 Route::get("/company", [CompanyController::class, "index"]);
 Route::get("/company/{id}", [CompanyController::class, "show"]);
-Route::middleware(['auth:sanctum', 'AdminAccess'])->group(function () {
+Route::middleware(['auth:sanctum', 'AdminAccessAPI'])->group(function () {
   Route::post("/company", [CompanyController::class, "store"]);
   Route::patch("/company/{id}", [CompanyController::class, "update"]);
   Route::delete("/company/{id}", [CompanyController::class, "destroy"]);
@@ -55,6 +55,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 //Roles API
 Route::get("/roles", [RoleController::class, "index"]);
-Route::post("/roles", [RoleController::class, "store"])->middleware(['auth:sanctum', 'AdminAccess']);
+Route::post("/roles", [RoleController::class, "store"])->middleware(['auth:sanctum', 'AdminAccessAPI']);
 //ProjectRole API
 Route::get("/project-roles", [ProjectRoleController::class, "show"]);

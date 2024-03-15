@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminAccess
+class AdminAccessAPI
 {
     /**
      * Handle an incoming request.
