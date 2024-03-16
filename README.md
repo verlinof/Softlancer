@@ -36,9 +36,10 @@ php artisan serve --port=9000
 
 5. Make 1 account first by login into the Web App
 
-6. Run the Seeder
+6. Run Migration and Run the Seeder
 
 ```
+php artisan migrate:fresh
 php artisan db:seed --class=CompanySeeder
 php artisan db:seed --class=ProjectSeeder
 php artisan db:seed --class=RoleSeeder
