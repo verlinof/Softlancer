@@ -6,6 +6,7 @@ use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CompanyResource;
+use Intervention\Image\Facades\Image;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CompanyController extends Controller
@@ -37,9 +38,20 @@ class CompanyController extends Controller
             $request->validate([
                 'company_name' => 'required|string',
                 'company_description' => 'required|string',
-                'company_logo' => 'required|string',
+                'company_logo' => 'required|image|max:5000',
             ]);
-            $company = Company::create($request->all());
+            //Store image to File
+            $filenameWithExt = $request->file('company_logo')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extension = $request->file('company_logo')->getClientOriginalExtension();
+            $fileNameToStore = $filename . '_' . time() . '.' . $extension;
+            $image = $request->file('company_logo')->storeAs('public/company_logo', $fileNameToStore);
+            $filenameDatabase = 'storage/company_logo/' . $fileNameToStore;
+            $company = Company::create([
+                'company_name' => $request->company_name,
+                'company_description' => $request->company_description,
+                'company_logo' => $filenameDatabase,
+            ]);
             return response()->json([
                 "message" => "Company Created Successfully",
                 "data" => new CompanyResource($company),
