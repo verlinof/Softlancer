@@ -55,3 +55,9 @@ php artisan db:seed --class=ApplicationSeeder
 ```
 php artisan queue:work
 ```
+
+9. Make Storage Public
+
+```
+php artisan storage:link
+```
