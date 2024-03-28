@@ -22,6 +22,9 @@ export default {
       },
       screens: {
         '2xl': '1320px',
+      },
+      backgroundImage: {
+        'paper-patern': 'url("/public/image/bg_paper.svg")',
       }
     },
   },

@@ -18,3 +18,10 @@ hamburger.addEventListener('click', function() {
     hamburger.classList.toggle('is-active');
     navMenu.classList.toggle('hidden');
 });
+
+document.querySelectorAll('.pagination-button').forEach(button => {
+    button.addEventListener('click', () => {
+      // Ganti slide atau halaman sesuai tombol yang ditekan
+      // Misalnya, dapat menggunakan transform: translateX() untuk menggeser slide
+    });
+  });

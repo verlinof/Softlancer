@@ -27,3 +27,19 @@ body{
 .is-active .hamburger-active > span:nth-child(3){
     @apply -rotate-45;
 }
+
+.pagination-button {
+    @apply py-2 px-3 text-gray-500 bg-white rounded-md focus:outline-none;
+  }
+
+.pagination-button:disabled {
+    @apply opacity-50 cursor-not-allowed;
+}
+
+.pagination-button:hover:not(:disabled) {
+    @apply bg-gray-100;
+}
+
+.pagination-button[aria-current] {
+    @apply font-bold bg-gray-200;
+}
