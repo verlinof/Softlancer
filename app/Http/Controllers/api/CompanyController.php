@@ -6,8 +6,10 @@ use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CompanyResource;
-use Intervention\Image\Facades\Image;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class CompanyController extends Controller
 {
@@ -44,7 +46,7 @@ class CompanyController extends Controller
             $filenameWithExt = $request->file('company_logo')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('company_logo')->getClientOriginalExtension();
-            $fileNameToStore = $filename . '_' . time() . '.' . $extension;
+            $fileNameToStore = uniqid() . '.' . $extension;;
             $image = $request->file('company_logo')->storeAs('public/company_logo', $fileNameToStore);
             $filenameDatabase = 'storage/company_logo/' . $fileNameToStore;
             $company = Company::create([
@@ -56,9 +58,13 @@ class CompanyController extends Controller
                 "message" => "Company Created Successfully",
                 "data" => new CompanyResource($company),
             ], 201);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => "Internal Server Error"
+                'message' => "Error: " . $e->getMessage()
             ], 500);
         }
     }
@@ -92,12 +98,33 @@ class CompanyController extends Controller
     {
         try {
             $company = Company::findOrFail($id);
+
             $request->validate([
                 'company_name' => 'required|string',
                 'company_description' => 'required|string',
-                'company_logo' => 'required|string',
+                'company_logo' => 'nullable|image|max:5000',
             ]);
-            $company->update($request->all());
+
+            if ($request->hasFile('company_logo')) {
+                $filenameWithExt = $request->file('company_logo')->getClientOriginalName();
+                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                $extension = $request->file('company_logo')->getClientOriginalExtension();
+                $fileNameToStore = uniqid() . '.' . $extension;;
+                $request->file('company_logo')->storeAs('public/company_logo', $fileNameToStore);
+                $filenameDatabase = 'storage/company_logo/' . $fileNameToStore;
+                $request['company_logo'] = $filenameDatabase;
+
+                File::delete($company->company_logo);
+
+                $request["company_logo"] = $filenameDatabase;
+                $company->update([
+                    'company_name' => $request->company_name,
+                    'company_description' => $request->company_description,
+                    'company_logo' => $filenameDatabase,
+                ]);
+            } else {
+                $company->update($request->except('company_logo'));
+            }
             return response()->json([
                 "message" => "Company Updated Successfully",
                 "data" => new CompanyResource($company),
@@ -108,11 +135,7 @@ class CompanyController extends Controller
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => "Internal Server Error"
-            ], 500);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => "Internal Server Error"
+                'message' => "Error: " . $e->getMessage()
             ], 500);
         }
     }
@@ -124,6 +147,7 @@ class CompanyController extends Controller
     {
         try {
             $company = Company::findOrFail($id);
+            Storage::delete($company->company_logo);
             $company->delete();
             return response()->json([
                 'message' => 'Company deleted successfully'
@@ -134,7 +158,7 @@ class CompanyController extends Controller
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => "Internal Server Error"
+                'message' => "Error: " . $e->getMessage()
             ], 500);
         }
     }
