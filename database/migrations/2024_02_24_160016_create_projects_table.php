@@ -16,6 +16,9 @@ return new class extends Migration
             $table->foreignId('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->string("project_title");
             $table->text("project_description");
+            $table->text("project_qualification");
+            $table->text("project_skill");
+            $table->enum("job_type", ["onsite", "offsite"]);
             $table->enum("status", ["open", "closed"])->default("open");
         });
     }

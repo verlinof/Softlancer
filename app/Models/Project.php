@@ -15,6 +15,9 @@ class Project extends Model
         "company_id",
         'project_title',
         'project_description',
+        'project_qualification',
+        'project_skill',
+        'job_type',
         'status'
     ];
 
