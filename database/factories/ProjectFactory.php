@@ -20,6 +20,9 @@ class ProjectFactory extends Factory
             "company_id" => fake()->numberBetween(1, 10),
             "project_title" => fake()->sentence(2),
             "project_description" => fake()->sentence(10),
+            "project_qualification" => fake()->sentence(10),
+            "project_skill" => fake()->sentence(10),
+            "job_type" => fake()->randomElement(["onsite", "offsite"]),
             "status" => "open",
         ];
     }
