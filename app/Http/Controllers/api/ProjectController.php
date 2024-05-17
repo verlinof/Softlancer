@@ -16,26 +16,40 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $projects = Project::paginate(5);
+            $job_type = $request->query("job_type", null);
+            $role = $request->query("role", null);
+
+            if ($role != null && $job_type != null) {
+                $projects = Project::whereHas('projectRole', function (Builder $query) use ($role) {
+                    $query->where("role_id", $role);
+                })->where("job_type", $job_type)->get();
+            } elseif ($role != null) {
+                $projects = Project::whereHas('projectRole', function (Builder $query) use ($role) {
+                    $query->where("role_id", $role);
+                })->get();
+            } elseif ($job_type != null) {
+                $projects = Project::where("job_type", $job_type)->where("status", "open")->get();
+            } else {
+                $projects = Project::where("status", "open")->get();
+            }
 
             return response()->json([
                 "message" => "Success",
-                "data" => ProjectResource::collection($projects->loadMissing('company')),
+                "data" => ProjectResource::collection($projects->loadMissing('company', 'role')),
             ], 200);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Internal Server Error',
-                'error' => $e->getMessage()
             ], 500);
         }
     }
@@ -54,6 +68,7 @@ class ProjectController extends Controller
                 'project_qualification' => 'required',
                 'project_skill' => 'required',
                 'job_type' => 'required|in:onsite,offsite',
+                'end_date' => 'date',
                 'roles' => 'required|array',
                 'roles.*' => 'exists:roles,id', // Ensure each project role ID exists in the project_roles table
                 'max_person' => 'required|array',
@@ -132,6 +147,7 @@ class ProjectController extends Controller
             'project_qualification' => 'required',
             'project_skill' => 'required',
             'job_type' => 'required|in:onsite,offsite',
+            'end_date' => 'date',
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,id',
             'max_person' => 'required|array',

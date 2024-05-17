@@ -18,12 +18,17 @@ class Project extends Model
         'project_qualification',
         'project_skill',
         'job_type',
+        'end_date',
         'status'
     ];
 
     public function projectRole()
     {
         return $this->hasMany(projectRole::class);
+    }
+    public function role()
+    {
+        return $this->hasManyThrough(Role::class, ProjectRole::class, 'role_id', 'id');
     }
     public function company()
     {

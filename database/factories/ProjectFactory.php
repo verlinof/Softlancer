@@ -23,6 +23,8 @@ class ProjectFactory extends Factory
             "project_qualification" => fake()->sentence(10),
             "project_skill" => fake()->sentence(10),
             "job_type" => fake()->randomElement(["onsite", "offsite"]),
+            "start_date" => fake()->date(),
+            "end_date" => fake()->date(),
             "status" => "open",
         ];
     }

@@ -20,6 +20,8 @@ return new class extends Migration
             $table->text("project_skill");
             $table->enum("job_type", ["onsite", "offsite"]);
             $table->enum("status", ["open", "closed"])->default("open");
+            $table->timestamp("start_date");
+            $table->date("end_date")->nullable();
         });
     }
 

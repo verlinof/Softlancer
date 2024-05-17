@@ -39,7 +39,6 @@ php artisan serve --port=9000
 6. Run Migration and Run the Seeder
 
 ```
-php artisan migrate:fresh
 php artisan db:seed --class=CompanySeeder
 php artisan db:seed --class=ProjectSeeder
 php artisan db:seed --class=RoleSeeder
