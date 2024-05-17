@@ -19,6 +19,13 @@ export default {
         background: '#B9DAD9',
         dark: '#0f172a',
         light: '#D5E9E8',
+        abu: '#EDEDED',
+        abu1: '#EAEDED',
+        white1: '#F9F9F9',
+        stroke: '#9AD3D0',
+        stroke1: '#9F9F9F',
+        stroke2: '#BDBEBE',
+        danger: '#BC0000',
       },
       screens: {
         '2xl': '1320px',
