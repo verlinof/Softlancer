@@ -21,9 +21,12 @@ class ProjectResource extends JsonResource
             "project_qualification" => $this->project_qualification,
             "project_skill" => $this->project_skill,
             "job_type" => $this->job_type,
+            "start_date" => $this->start_date,
+            "end_date" => $this->end_date,
             "status" => $this->status,
             "project_role" => $this->whenLoaded("projectRole"),
             "company" => $this->whenLoaded("company"),
+            "role" => $this->whenLoaded("role"),
         ];
     }
 }
