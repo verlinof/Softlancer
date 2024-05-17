@@ -1,18 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Softlancer</title>
-    <link rel="stylesheet" href="/public/css/output.css">
-</head>
+@extends("template")
+@section("root")
 <body class="bg-background">
     <!--- Header Start--->
     <header class="bg-transparent absolute top-0 left-0 w-full flex items-center z-10">
         <div class="container">
             <div class="flex items-center justify-between relative">
                 <div class="px-4">
-                    <img src="/public/image/logoSoftLancer.svg" alt="logo" class="h-10 my-4 pl-2">
+                    <img src="/image/logoSoftLancer.svg" alt="logo" class="h-10 my-4 pl-2">
                     <!-- <ul>
                         <li><a href="#home">Home</a></li>
                         <li><a href="#">Find a Job</a></li>
@@ -149,22 +143,22 @@
                     <nav id="partnership" class="block static">
                         <ul class="flex flex-wrap w-full">
                             <li class="">
-                                <a href="#logo1" class="bg-light rounded-xl px-3 py-2 text-base text-dark mr-4 mt-2 flex md:mr-4"><img src="/public/image/gojek.svg" alt="gojek" class="w-16"></a>
+                                <a href="#logo1" class="bg-light rounded-xl px-3 py-2 text-base text-dark mr-4 mt-2 flex md:mr-4"><img src="image/gojek.svg" alt="gojek" class="w-16"></a>
                             </li>
                             <li class="">
-                                <a href="#logo2" class="bg-light rounded-xl px-3 py-2 text-base text-dark mr-4 md:mr-4 mt-2 flex"><img src="/public/image/bukalapak.svg" alt="bukalapak" class="w-16"></a>
+                                <a href="#logo2" class="bg-light rounded-xl px-3 py-2 text-base text-dark mr-4 md:mr-4 mt-2 flex"><img src="image/bukalapak.svg" alt="bukalapak" class="w-16"></a>
                             </li>
                             <li class="">
-                                <a href="#logo3" class=" bg-light rounded-xl px-3 py-2 text-base text-dark mr-4 mt-2 flex md:mr-5"><img src="/public/image/tokopedia.svg" alt="tokopedia" class="w-16"></a>
+                                <a href="#logo3" class=" bg-light rounded-xl px-3 py-2 text-base text-dark mr-4 mt-2 flex md:mr-5"><img src="image/tokopedia.svg" alt="tokopedia" class="w-16"></a>
                             </li>
                             <li class="">
-                                <a href="#logo4" class="bg-light rounded-xl px-3 py-2 text-base text-dark mr-4 md:mr-4 mt-2 flex"><img src="/public/image/shopee.svg" alt="shopee" class="w-16"></a>
+                                <a href="#logo4" class="bg-light rounded-xl px-3 py-2 text-base text-dark mr-4 md:mr-4 mt-2 flex"><img src="image/shopee.svg" alt="shopee" class="w-16"></a>
                             </li>
                             <li class="">
-                                <a href="#logo5" class="bg-light rounded-xl px-3 py-2 text-base text-dark mr-4 mt-2 flex md:mr-5"><img src="/public/image/grab_font.svg" alt="grab" class="w-12 mx-2"></a>
+                                <a href="#logo5" class="bg-light rounded-xl px-3 py-2 text-base text-dark mr-4 mt-2 flex md:mr-5"><img src="image/grab_font.svg" alt="grab" class="w-12 mx-2"></a>
                             </li>
                             <li class="">
-                                <a href="#logo5" class="bg-light rounded-xl px-3 py-2 text-base text-dark mt-2 flex"><img src="/public/image/bca.svg" alt="bca" class="w-12 mx-2"></a>
+                                <a href="#logo5" class="bg-light rounded-xl px-3 py-2 text-base text-dark mt-2 flex"><img src="image/bca.svg" alt="bca" class="w-12 mx-2"></a>
                             </li>
                         </ul>
                     </nav>
@@ -481,9 +475,4 @@
             <p class="text-sm px-12 py-3 text-active"><span class="rounded-full bg-white p-1">by</span> Teknologi Rekayasa Perangkat Lunak <span class="text-white">Sekolah Vokasi UGM</span></p>
         </nav>
     </footer>
-    <!-- Footer Section End -->
-
-    <script src="/public/js/script.js"></script>
-    <script src="/public/js/script.jsx"></script>
-</body>
-</html>
+@endsection
