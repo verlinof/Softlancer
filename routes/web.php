@@ -21,6 +21,10 @@ use Illuminate\Support\Facades\Route;
 //     return view('/main.blade.php');
 // });
 
+Route::get("/", function () {
+    return view('user/home_page/main');
+});
+
 Route::get("/login", [AuthController::class, "login"]);
 
 Route::get("/logout", [AuthController::class, "logout"]);
