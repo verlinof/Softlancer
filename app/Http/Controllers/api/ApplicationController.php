@@ -38,20 +38,20 @@ class ApplicationController extends Controller
                 return ApplicationResource::collection($applications->loadMissing("user", "project"));
             } else {
                 return response()->json([
-                    'message' => 'Only userId, projectId or projectRoleId can be used'
+                    'error' => 'Only userId, projectId or projectRoleId can be used'
                 ], 400);
             }
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                'message' => 'Application not found'
+                'error' => 'Application not found'
             ], 404);
         } catch (QueryException $e) {
             return response()->json([
-                'message' => 'Database Error'
+                'error' => 'Database Error'
             ], 500);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Error: ' . $e->getMessage()
+                'error' => 'Error: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -77,7 +77,7 @@ class ApplicationController extends Controller
             ], 201);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Error: ' . $e->getMessage()
+                'error' => 'Error: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -103,15 +103,15 @@ class ApplicationController extends Controller
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                'message' => 'Application not found'
+                'error' => 'Application not found'
             ], 404);
         } catch (QueryException $e) {
             return response()->json([
-                'message' => 'Database Error'
+                'error' => 'Database Error'
             ], 500);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Internal Server Error'
+                'error' => 'Internal Server Error'
             ], 500);
         }
     }
@@ -133,15 +133,15 @@ class ApplicationController extends Controller
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                'message' => 'Application Not Found'
+                'error' => 'Application Not Found'
             ], 404);
         } catch (QueryException $e) {
             return response()->json([
-                'message' => 'Database Error'
+                'error' => 'Database Error'
             ], 500);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Internal Server Error'
+                'error' => 'Internal Server Error'
             ], 500);
         }
     }
@@ -159,15 +159,15 @@ class ApplicationController extends Controller
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                'message' => 'Application not found'
+                'error' => 'Application not found'
             ], 404);
         } catch (QueryException $e) {
             return response()->json([
-                'message' => 'Database Error'
+                'error' => 'Database Error'
             ], 500);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Internal Server Error'
+                'error' => 'Internal Server Error'
             ], 500);
         }
     }

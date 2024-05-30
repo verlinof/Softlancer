@@ -26,7 +26,7 @@ class CompanyController extends Controller
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => "Internal Server Error"
+                'error' => "Internal Server Error"
             ], 500);
         }
     }
@@ -60,11 +60,11 @@ class CompanyController extends Controller
             ], 201);
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => "Error: " . $e->getMessage()
+                'error' => "Error: " . $e->getMessage()
             ], 500);
         }
     }
@@ -82,11 +82,11 @@ class CompanyController extends Controller
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                'message' => "Company not found"
+                'error' => "Company not found"
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => "Internal Server Error"
+                'error' => "Internal Server Error"
             ], 500);
         }
     }
@@ -131,11 +131,11 @@ class CompanyController extends Controller
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                'message' => "Company not found"
+                'error' => "Company not found"
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => "Error: " . $e->getMessage()
+                'error' => "Error: " . $e->getMessage()
             ], 500);
         }
     }
@@ -154,11 +154,11 @@ class CompanyController extends Controller
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                'message' => "Company not found"
+                'error' => "Company not found"
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => "Error: " . $e->getMessage()
+                'error' => "Error: " . $e->getMessage()
             ], 500);
         }
     }

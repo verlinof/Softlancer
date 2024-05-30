@@ -24,8 +24,7 @@ class RoleController extends Controller
             ]);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Internal Server Error',
-                'error' => $e->getMessage()
+                'error' => 'Internal Server Error',
             ], 500);
         }
     }

@@ -39,15 +39,15 @@ class ProjectRoleController extends Controller
             }
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                'message' => 'Project Role not found: ' . $e->getMessage()
+                'error' => 'Project Role not found: ' . $e->getMessage()
             ], 404);
         } catch (QueryException $e) {
             return response()->json([
-                'message' => 'Database Error: ' . $e->getMessage()
+                'error' => 'Database Error: ' . $e->getMessage()
             ], 500);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Error: ' . $e->getMessage()
+                'error' => 'Error: ' . $e->getMessage()
             ], 500);
         }
     }

@@ -49,7 +49,7 @@ class ProjectController extends Controller
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Internal Server Error',
+                'error' => 'Internal Server Error',
             ], 500);
         }
     }
@@ -102,17 +102,17 @@ class ProjectController extends Controller
         } catch (QueryException $e) {
             // Handle database related exceptions here
             return response()->json([
-                'message' => 'Database Error: ' . $e->getMessage()
+                'error' => 'Database Error: ' . $e->getMessage()
             ], 500);
         } catch (ValidationException $e) {
             // Handle validation exceptions here
             return response()->json([
-                'message' => 'Validation Error: ' . $e->getMessage()
+                'error' => 'Validation Error: ' . $e->getMessage()
             ], 400);
         } catch (Exception $e) {
             // Handle general exceptions here
             return response()->json([
-                'message' => 'Error: ' . $e->getMessage()
+                'error' => 'Error: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -129,9 +129,9 @@ class ProjectController extends Controller
                 'data' => new ProjectResource($project->loadMissing('company', 'projectRole.role')),
             ]);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Project not found'], 404);
+            return response()->json(['error' => 'Project not found'], 404);
         } catch (Exception $e) {
-            return response()->json(['message' => 'Internal Server Error'], 500);
+            return response()->json(['error' => 'Internal Server Error'], 500);
         }
     }
 
@@ -208,9 +208,9 @@ class ProjectController extends Controller
                 'existingRoleId' => $existingRoleIds
             ], 200);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Project not found'], 404);
+            return response()->json(['error' => 'Project not found'], 404);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Internal Server Error', 'error' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Internal Server Error', 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -233,9 +233,9 @@ class ProjectController extends Controller
                 "data" => $project
             ]);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Project not found: ' . $e->getMessage()], 404);
+            return response()->json(['error' => 'Project not found: ' . $e->getMessage()], 404);
         } catch (Exception $e) {
-            return response()->json(['message' => 'Internal Server Error'], 500);
+            return response()->json(['error' => 'Internal Server Error'], 500);
         }
     }
 
@@ -258,9 +258,9 @@ class ProjectController extends Controller
                 "data" => $project
             ]);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Project not found: ' . $e->getMessage()], 404);
+            return response()->json(['error' => 'Project not found: ' . $e->getMessage()], 404);
         } catch (Exception $e) {
-            return response()->json(['message' => 'Internal Server Error'], 500);
+            return response()->json(['error' => 'Internal Server Error'], 500);
         }
     }
 
@@ -279,12 +279,12 @@ class ProjectController extends Controller
         } catch (ModelNotFoundException $e) {
             // Handle the case where the project with the specified ID does not exist
             return response()->json([
-                'message' => 'Project not found: ' . $e->getMessage()
+                'error' => 'Project not found: ' . $e->getMessage()
             ], 404);
         } catch (Exception $e) {
             // Handle general exceptions
             return response()->json([
-                'message' => 'Error: ' . $e->getMessage()
+                'error' => 'Error: ' . $e->getMessage()
             ], 500);
         }
     }

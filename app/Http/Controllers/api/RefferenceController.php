@@ -23,8 +23,7 @@ class RefferenceController extends Controller
             return RefferenceResource::collection($refferences->loadMissing("user:id,name,email", "role"));
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Internal Server Error',
-                'error' => $e->getMessage()
+                'error' => 'Internal Server Error'
             ], 500);
         }
     }
@@ -40,8 +39,7 @@ class RefferenceController extends Controller
             ]);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Internal Server Error',
-                'error' => $e->getMessage()
+                'error' => 'Internal Server Error',
             ], 500);
         }
     }
@@ -60,7 +58,7 @@ class RefferenceController extends Controller
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => "Internal Server Error"
+                'error' => "Internal Server Error"
             ], 500);
         }
     }
@@ -95,11 +93,11 @@ class RefferenceController extends Controller
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                'message' => 'Refference not found'
+                'error' => 'Refference not found'
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Failed to delete refference: ' . $e->getMessage()
+                'error' => 'Failed to delete refference: ' . $e->getMessage()
             ], 500);
         }
     }

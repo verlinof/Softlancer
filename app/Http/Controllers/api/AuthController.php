@@ -52,23 +52,29 @@ class AuthController extends Controller
 
                 return response()->json($data, 200);
             }
-            return response()->json(['message' => 'Invalid token'], 401);
+            return response()->json(['error' => 'Invalid token'], 401);
         } catch (Exception $e) {
-            return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Error: ' . $e->getMessage()], 500);
         }
     }
 
     public function logout(Request $request)
     {
-        $username = $request->user()->name;
+        try {
+            $username = $request->user()->name;
 
-        // Revoke current user API Token
-        $request->user()->currentAccessToken()->delete();
+            // Revoke current user API Token
+            $request->user()->currentAccessToken()->delete();
 
-        return response()->json([
-            "username" => $username,
-            'message' => 'Successfully logged out'
-        ], 200);
+            return response()->json([
+                "username" => $username,
+                'message' => 'Successfully logged out'
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' =>  $e->getMessage()
+            ]);
+        }
     }
 
     public function profile(Request $request)
@@ -79,15 +85,15 @@ class AuthController extends Controller
             return new UserDetailResource($user);
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                'message' => 'User not found: ' . $e->getMessage()
+                'error' => 'User not found: ' . $e->getMessage()
             ], 404);
         } catch (QueryException $e) {
             return response()->json([
-                'message' => 'Database Error: ' . $e->getMessage()
+                'error' => 'Database Error: ' . $e->getMessage()
             ], 500);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Error: ' . $e->getMessage()
+                'error' => 'Error: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -113,68 +119,67 @@ class AuthController extends Controller
             ], 200);
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Validation Error: ' . $e->getMessage(),
-                'errors' => $e->errors()
+                'error' => 'Validation Error: ' . $e->getMessage(),
             ], 422);
         } catch (QueryException $e) {
             return response()->json([
-                'message' => 'Database Error: ' . $e->getMessage()
+                'error' => 'Database Error: ' . $e->getMessage()
             ], 500);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Error: ' . $e->getMessage()
+                'error' => 'Error: ' . $e->getMessage()
             ], 500);
         }
     }
 
-    public function redirectGoogle()
-    {
-        return Socialite::driver("google")->stateless()->redirect();
-    }
+    // public function redirectGoogle()
+    // {
+    //     return Socialite::driver("google")->stateless()->redirect();
+    // }
 
-    public function googleCallback()
-    {
-        $socialUser = Socialite::driver("google")->stateless()->user();
-        dd($socialUser);
+    // public function googleCallback()
+    // {
+    //     $socialUser = Socialite::driver("google")->stateless()->user();
+    //     dd($socialUser);
 
-        $user = User::where('google_id', $socialUser->id)->first();
+    //     $user = User::where('google_id', $socialUser->id)->first();
 
-        if (!$user) {
-            $user = User::updateOrCreate([
-                'google_id' => $socialUser->id,
-            ], [
-                'name' => $socialUser->name,
-                'email' => $socialUser->email,
-                'google_token' => $socialUser->token,
-                'google_refresh_token' => $socialUser->refreshToken,
-                'is_admin' => false
-            ]);
+    //     if (!$user) {
+    //         $user = User::updateOrCreate([
+    //             'google_id' => $socialUser->id,
+    //         ], [
+    //             'name' => $socialUser->name,
+    //             'email' => $socialUser->email,
+    //             'google_token' => $socialUser->token,
+    //             'google_refresh_token' => $socialUser->refreshToken,
+    //             'is_admin' => false
+    //         ]);
 
-            //Token for API and User Credentials
-            $token = $user->createToken($user->name)->plainTextToken;
-            $data = [
-                'user' => new UserDetailResource($user),
-                'token' => $token
-            ];
+    //         //Token for API and User Credentials
+    //         $token = $user->createToken($user->name)->plainTextToken;
+    //         $data = [
+    //             'user' => new UserDetailResource($user),
+    //             'token' => $token
+    //         ];
 
-            //Encode data Token API
-            $json_data = json_encode($data);
+    //         //Encode data Token API
+    //         $json_data = json_encode($data);
 
-            return redirect('http://127.0.0.1:8000/login/google/callback?token=' . urlencode($json_data));
-        }
+    //         return redirect('http://127.0.0.1:8000/login/google/callback?token=' . urlencode($json_data));
+    //     }
 
-        //Token for API and User Credentials
-        $token = $user->createToken($user->name)->plainTextToken;
-        $data = [
-            'user' => new UserDetailResource($user),
-            'token' => $token
-        ];
+    //     //Token for API and User Credentials
+    //     $token = $user->createToken($user->name)->plainTextToken;
+    //     $data = [
+    //         'user' => new UserDetailResource($user),
+    //         'token' => $token
+    //     ];
 
-        //Encode data Token API
-        $json_data = json_encode($data);
+    //     //Encode data Token API
+    //     $json_data = json_encode($data);
 
-        return redirect('http://127.0.0.1:8000/login/google/callback?token=' . urlencode($json_data));
-    }
+    //     return redirect('http://127.0.0.1:8000/login/google/callback?token=' . urlencode($json_data));
+    // }
 
     /**
      * Remove the specified resource from storage.
