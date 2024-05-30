@@ -15,6 +15,7 @@ class UserDetailResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            "google_id" => $this->google_id,
             "id" => $this->id,
             "name" => $this->name,
             "email" => $this->email,

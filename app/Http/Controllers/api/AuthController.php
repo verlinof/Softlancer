@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserDetailResource;
 use Exception;
+use Google_Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
@@ -14,52 +15,47 @@ use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
-    public function redirectGoogle()
+    public function login(Request $request)
     {
-        return Socialite::driver("google")->stateless()->redirect();
-    }
+        try {
+            $token = $request->token;
 
-    public function googleCallback()
-    {
-        $socialUser = Socialite::driver("google")->stateless()->user();
+            $client = new Google_Client(['client_id' => env('GOOGLE_CLIENT_ID')]);
+            $payload = $client->verifyIdToken($token);
 
-        $user = User::where('google_id', $socialUser->id)->first();
+            if ($payload) {
+                $googleId = $payload['sub'];
+                $email = $payload['email'];
+                $name = $payload['name'];
+                $avatar = $payload['picture'];
 
-        if (!$user) {
-            $user = User::updateOrCreate([
-                'google_id' => $socialUser->id,
-            ], [
-                'name' => $socialUser->name,
-                'email' => $socialUser->email,
-                'google_token' => $socialUser->token,
-                'google_refresh_token' => $socialUser->refreshToken,
-                'is_admin' => false
-            ]);
+                // Find or create the user
+                $user = User::where('google_id', $googleId)->first();
 
-            //Token for API and User Credentials
-            $token = $user->createToken($user->name)->plainTextToken;
-            $data = [
-                'user' => new UserDetailResource($user),
-                'token' => $token
-            ];
+                if (!$user) {
+                    $user = User::updateOrCreate([
+                        'google_id' => $googleId,
+                    ], [
+                        'name' => $name,
+                        'email' => $email,
+                        'avatar' => $avatar,
+                        'is_admin' => false,
+                    ]);
+                }
 
-            //Encode data Token API
-            $json_data = json_encode($data);
+                // Token for API and User Credentials
+                $token = $user->createToken($user->name)->plainTextToken;
+                $data = [
+                    'user' => $user,
+                    'token' => $token,
+                ];
 
-            return redirect('http://127.0.0.1:8000/login/google/callback?token=' . urlencode($json_data));
+                return response()->json($data, 200);
+            }
+            return response()->json(['message' => 'Invalid token'], 401);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
         }
-
-        //Token for API and User Credentials
-        $token = $user->createToken($user->name)->plainTextToken;
-        $data = [
-            'user' => new UserDetailResource($user),
-            'token' => $token
-        ];
-
-        //Encode data Token API
-        $json_data = json_encode($data);
-
-        return redirect('http://127.0.0.1:8000/login/google/callback?token=' . urlencode($json_data));
     }
 
     public function logout(Request $request)
@@ -129,6 +125,55 @@ class AuthController extends Controller
                 'message' => 'Error: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function redirectGoogle()
+    {
+        return Socialite::driver("google")->stateless()->redirect();
+    }
+
+    public function googleCallback()
+    {
+        $socialUser = Socialite::driver("google")->stateless()->user();
+        dd($socialUser);
+
+        $user = User::where('google_id', $socialUser->id)->first();
+
+        if (!$user) {
+            $user = User::updateOrCreate([
+                'google_id' => $socialUser->id,
+            ], [
+                'name' => $socialUser->name,
+                'email' => $socialUser->email,
+                'google_token' => $socialUser->token,
+                'google_refresh_token' => $socialUser->refreshToken,
+                'is_admin' => false
+            ]);
+
+            //Token for API and User Credentials
+            $token = $user->createToken($user->name)->plainTextToken;
+            $data = [
+                'user' => new UserDetailResource($user),
+                'token' => $token
+            ];
+
+            //Encode data Token API
+            $json_data = json_encode($data);
+
+            return redirect('http://127.0.0.1:8000/login/google/callback?token=' . urlencode($json_data));
+        }
+
+        //Token for API and User Credentials
+        $token = $user->createToken($user->name)->plainTextToken;
+        $data = [
+            'user' => new UserDetailResource($user),
+            'token' => $token
+        ];
+
+        //Encode data Token API
+        $json_data = json_encode($data);
+
+        return redirect('http://127.0.0.1:8000/login/google/callback?token=' . urlencode($json_data));
     }
 
     /**

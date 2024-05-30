@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Route;
 //Authentication API
 Route::get('/auth/google/redirect', [AuthController::class, 'redirectGoogle']);
 Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
+
+Route::post('/login', [AuthController::class, 'login']);
+
 //Projects API
 Route::get("/projects", [ProjectController::class, "index"]);
 Route::get("/projects/{id}", [ProjectController::class, "show"]);
