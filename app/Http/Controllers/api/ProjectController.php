@@ -49,7 +49,7 @@ class ProjectController extends Controller
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'error' => 'Internal Server Error',
+                'error' => 'Internal Server' . $e,
             ], 500);
         }
     }
@@ -226,8 +226,6 @@ class ProjectController extends Controller
                 'status' => "closed"
             ]);
 
-            //MASIH HARUS MIKIRIN BUAT NGIRIM EMAIL KE APPLICANT TERKAIT
-
             return response()->json([
                 "message" => "Project Closed",
                 "data" => $project
@@ -250,8 +248,6 @@ class ProjectController extends Controller
                 'project_description' => $project->project_description,
                 'status' => "open"
             ]);
-
-            //MASIH HARUS MIKIRIN BUAT NGIRIM EMAIL KE APPLICANT TERKAIT
 
             return response()->json([
                 "message" => "Project Opened Successfully",
