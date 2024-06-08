@@ -27,11 +27,10 @@ php artisan key:generate
 php artisan migrate:fresh
 ```
 
-4. Run the project using 2 ports, 8000 for the API and 9000 for the Front End
+4. Run the project for the Backend and API
 
 ```
-php artisan serve --port=8000
-php artisan serve --port=9000
+php artisan serve
 ```
 
 5. Make 1 account first by login into the Web App
