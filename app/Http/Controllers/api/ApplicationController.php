@@ -13,6 +13,26 @@ use Illuminate\Http\Request;
 
 class ApplicationController extends Controller
 {
+    public function byUser(Request $request)
+    {
+        try {
+            $status = $request->query('status', 'waiting');
+            if ($status == "waiting") {
+                $applications = Application::where("user_id", $request->user()->id)->where("status", "waiting")->get();
+            } else if ($status == "approve") {
+                $applications = Application::where("user_id", $request->user()->id)->where("status", "approve")->get();
+            } else if ($status == "decline") {
+                $applications = Application::where("user_id", $request->user()->id)->where("status", "decline")->get();
+            }
+
+            return ApplicationResource::collection($applications->loadMissing("project", "role"));
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     /**
      * Display all the Application data or Display a listing of the resource.
      */
@@ -64,8 +84,8 @@ class ApplicationController extends Controller
         try {
             $request->validate([
                 'project_role_id' => 'required|exists:project_roles,id|integer',
-                'cv_file' => 'required|string',
-                'portofolio' => 'nullable|string',
+                'cv_file' => 'required|url',
+                'portofolio' => 'url',
             ]);
             $request["user_id"] = $request->user()->id;
             $request["status"] = "waiting";
