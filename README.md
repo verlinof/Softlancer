@@ -35,7 +35,7 @@ php artisan serve
 
 5. Make 1 account first by login into the Web App
 
-6. Run Migration and Run the Seeder
+6. Run the Seeder
 
 ```
 php artisan db:seed --class=CompanySeeder

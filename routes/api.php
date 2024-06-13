@@ -35,6 +35,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
   Route::get("/applications/handle/{id}", [ApplicationController::class, "handleApplication"])->middleware(['AdminAccessAPI']); //Untuk handle application
   Route::post("/applications", [ApplicationController::class, "store"]);
   Route::get("/applications", [ApplicationController::class, "show"]);
+  Route::get("/applications/user", [ApplicationController::class, "byUser"]);
 });
 //Company API
 Route::get("/company", [CompanyController::class, "index"]);
