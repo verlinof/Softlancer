@@ -16,22 +16,32 @@ class ApplicationController extends Controller
     public function byUser(Request $request)
     {
         try {
+            // Default status to 'waiting' if not provided
             $status = $request->query('status', 'waiting');
-            if ($status == "waiting") {
-                $applications = Application::where("user_id", $request->user()->id)->where("status", "waiting")->get();
-            } else if ($status == "approve") {
-                $applications = Application::where("user_id", $request->user()->id)->where("status", "approve")->get();
-            } else if ($status == "decline") {
-                $applications = Application::where("user_id", $request->user()->id)->where("status", "decline")->get();
+
+            // Validate the status to make sure it's one of the expected values
+            $validStatuses = ['waiting', 'approve', 'decline'];
+            if (!in_array($status, $validStatuses)) {
+                return response()->json([
+                    'error' => 'Invalid status provided.'
+                ], 400);
             }
 
-            return ApplicationResource::collection($applications->loadMissing("project", "role"));
+            // Get applications with eager loading
+            $applications = Application::where('user_id', $request->user()->id)
+                ->where('status', $status)
+                ->with(['project', 'project.company', 'role'])
+                ->get();
+
+            // Return the collection of resources
+            return ApplicationResource::collection($applications);
         } catch (Exception $e) {
             return response()->json([
                 'error' => 'Error: ' . $e->getMessage()
             ], 500);
         }
     }
+
 
     /**
      * Display all the Application data or Display a listing of the resource.
