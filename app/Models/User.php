@@ -36,8 +36,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'google_id',
-        'google_token',
-        'google_refresh_token',
     ];
 
     /**
@@ -46,4 +44,14 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [];
+
+    public function role()
+    {
+        return $this->hasManyThrough(
+            Role::class,
+            Refference::class,
+            "role_id",
+            "id",
+        );
+    }
 }

@@ -19,6 +19,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get("/projects", [ProjectController::class, "index"]);
 Route::get("/projects/{id}", [ProjectController::class, "show"]);
 Route::middleware(['auth:sanctum', 'AdminAccessAPI'])->group(function () {
+  Route::get("/users", [AuthController::class, "index"]);
   Route::post("/projects", [ProjectController::class, "store"]);
   Route::patch("/projects/{id}", [ProjectController::class, "update"]);
   Route::delete("/projects/{id}", [ProjectController::class, "destroy"]);

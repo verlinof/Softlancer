@@ -21,7 +21,8 @@ class UserDetailResource extends JsonResource
             "email" => $this->email,
             "avatar" => $this->avatar,
             "phone_number" => $this->phone_number,
-            "is_admin" => $this->is_admin
+            "is_admin" => $this->is_admin,
+            "roles" => $this->whenLoaded("role"),
         ];
     }
 }

@@ -15,6 +15,22 @@ use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
+    public function index()
+    {
+        try {
+            $users = User::where('is_admin', false)->get();
+
+            return response()->json([
+                'message' => "Success",
+                'users' => UserDetailResource::collection($users->loadMissing('role')),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' =>  "Internal Server Error"
+            ]);
+        }
+    }
+
     public function login(Request $request)
     {
         try {
