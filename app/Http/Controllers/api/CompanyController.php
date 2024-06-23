@@ -6,6 +6,8 @@ use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CompanyResource;
+use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -62,7 +64,11 @@ class CompanyController extends Controller
             return response()->json([
                 'error' => $e->getMessage(),
             ]);
-        } catch (\Exception $e) {
+        } catch (AuthenticationException $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 401);
+        } catch (Exception $e) {
             return response()->json([
                 'error' => "Error: " . $e->getMessage()
             ], 500);

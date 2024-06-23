@@ -25,6 +25,7 @@ Route::get("/", function () {
     return view('main');
 });
 
+
 // Route::get("/login", [AuthController::class, "login"]);
 
 // Route::get("/logout", [AuthController::class, "logout"]);

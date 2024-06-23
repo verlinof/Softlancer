@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class RefferenceController extends Controller
 {
@@ -35,8 +36,9 @@ class RefferenceController extends Controller
             $refferences = Refference::where("user_id", $user->id)->get();
 
             return response()->json([
-                RefferenceResource::collection($refferences->loadMissing("role")),
-            ]);
+                'message' => 'Success',
+                'data' => RefferenceResource::collection($refferences->loadMissing("role")),
+            ], 200);
         } catch (Exception $e) {
             return response()->json([
                 'error' => 'Internal Server Error',
@@ -47,21 +49,50 @@ class RefferenceController extends Controller
     public function store(Request $request)
     {
         try {
+            $user = Auth::user();
+
             $request->validate([
-                'user_id' => 'required|exists:users,id',
-                'role_id' => 'required|exists:roles,id',
+                'role_id' => 'required|array',
+                'role_id.*' => 'exists:roles,id', // Validate each role_id exists
             ]);
-            $refference = Refference::create($request->all());
+
+            $roleIds = $request->input('role_id');
+            $createdReferences = [];
+
+            DB::beginTransaction();
+
+            foreach ($roleIds as $roleId) {
+                // Check if the combination of user_id and role_id already exists
+                $existingReference = Refference::where('user_id', $user->id)
+                    ->where('role_id', $roleId)
+                    ->first();
+
+                if (!$existingReference) {
+                    $refference = Refference::create([
+                        'user_id' => $user->id,
+                        'role_id' => $roleId,
+                        // Add other fields from the request if needed
+                    ]);
+                    $createdReferences[] = $refference;
+                }
+            }
+
+            DB::commit();
+
             return response()->json([
-                "message" => "Refference Created Successfully",
-                "data" => new RefferenceResource($refference),
+                "message" => "References Created Successfully",
+                "data" => RefferenceResource::collection($createdReferences),
             ], 201);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
-                'error' => "Internal Server Error"
+                'error' => "Internal Server Error",
+                'message' => $e->getMessage(), // Optional: to get the exact error message
             ], 500);
         }
     }
+
+
 
     /**
      * Display the specified resource.
