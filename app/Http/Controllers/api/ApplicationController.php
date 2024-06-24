@@ -55,7 +55,7 @@ class ApplicationController extends Controller
 
             if ($userId != 0 && $projectId == 0 && $projectRoleId == 0) {
                 $applications = Application::where("user_id", $userId)->get();
-                return ApplicationResource::collection($applications->loadMissing("project", "role"));
+                return ApplicationResource::collection($applications->loadMissing("user", "project", "role"));
             } else if ($userId == 0 && $projectId != 0 && $projectRoleId == 0) {
                 $projectRoleId = ProjectRole::where("project_id", $projectId)->get()->pluck("id");
                 $applications = Application::whereIn("project_role_id", $projectRoleId)->get();
@@ -65,7 +65,7 @@ class ApplicationController extends Controller
                 return ApplicationResource::collection($applications->loadMissing("user", "project", "role"));
             } else if ($userId == 0 && $projectId == 0 && $projectRoleId == 0) {
                 $applications = Application::all();
-                return ApplicationResource::collection($applications->loadMissing("user", "project"));
+                return ApplicationResource::collection($applications->loadMissing("user", "project", "role"));
             } else {
                 return response()->json([
                     'error' => 'Only userId, projectId or projectRoleId can be used'
