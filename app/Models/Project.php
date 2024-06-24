@@ -18,6 +18,7 @@ class Project extends Model
         'project_qualification',
         'project_skill',
         'job_type',
+        'start_date',
         'end_date',
         'status'
     ];

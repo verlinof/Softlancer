@@ -75,7 +75,7 @@ class ProjectController extends Controller
             ]);
 
             // Create the project
-            $project = Project::create($request->only(['company_id', 'project_title', 'project_description']));
+            $project = Project::create($request->all());
 
             // Attach project roles with total_person
             for ($i = 0; $i < count($request->roles); $i++) {
@@ -157,7 +157,7 @@ class ProjectController extends Controller
             $project = Project::findOrFail($id);
 
             // Update main project data
-            $project->update([$request->only(['company_id', 'project_title', 'project_description'])]);
+            $project->update($request->all());
 
             // Update or create project roles
             $existingRoleIds = [];
