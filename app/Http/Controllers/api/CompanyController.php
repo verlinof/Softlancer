@@ -50,7 +50,7 @@ class CompanyController extends Controller
             $extension = $request->file('company_logo')->getClientOriginalExtension();
             $fileNameToStore = uniqid() . '.' . $extension;;
             $image = $request->file('company_logo')->storeAs('public/company_logo', $fileNameToStore);
-            $filenameDatabase = 'storage/company_logo/' . $fileNameToStore;
+            $filenameDatabase = env("APP_URL") . '/storage/company_logo/' . $fileNameToStore;
             $company = Company::create([
                 'company_name' => $request->company_name,
                 'company_description' => $request->company_description,

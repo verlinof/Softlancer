@@ -140,28 +140,24 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'company_id' => 'required|exists:companies,id',
-            'project_title' => 'required|max:255',
-            'project_description' => 'required',
-            'project_qualification' => 'required',
-            'project_skill' => 'required',
-            'job_type' => 'required|in:onsite,offsite',
-            'end_date' => 'date',
-            'roles' => 'required|array',
-            'roles.*' => 'exists:roles,id',
-            'max_person' => 'required|array',
-        ]);
-
         try {
+            $request->validate([
+                'company_id' => 'required|exists:companies,id',
+                'project_title' => 'required|max:255',
+                'project_description' => 'required',
+                'project_qualification' => 'required',
+                'project_skill' => 'required',
+                'job_type' => 'required|in:onsite,offsite',
+                'end_date' => 'date',
+                'roles' => 'required|array',
+                'roles.*' => 'exists:roles,id',
+                'max_person' => 'required|array',
+            ]);
+
             $project = Project::findOrFail($id);
 
             // Update main project data
-            $project->update([
-                'company_id' => $request->company_id,
-                'project_title' => $request->project_title,
-                'project_description' => $request->project_description,
-            ]);
+            $project->update([$request->only(['company_id', 'project_title', 'project_description'])]);
 
             // Update or create project roles
             $existingRoleIds = [];
@@ -209,7 +205,7 @@ class ProjectController extends Controller
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Project not found'], 404);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => 'Internal Server Error', 'error' => $e->getMessage()], 500);
         }
     }

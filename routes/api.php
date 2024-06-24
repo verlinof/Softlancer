@@ -27,7 +27,7 @@ Route::middleware(['auth:sanctum', 'AdminAccessAPI'])->group(function () {
   Route::get("/projects/open-project/{id}", [ProjectController::class, "openProject"]);
 });
 //Application API
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'AuthApi'])->group(function () {
   //Middleware Application Owner check user->id == application->user_id
   Route::middleware(['ApplicationOwnerAPI'])->group(function () {
     Route::patch("/applications/{id}", [ApplicationController::class, "update"]);
@@ -47,7 +47,7 @@ Route::middleware(['auth:sanctum', 'AdminAccessAPI'])->group(function () {
   Route::delete("/company/{id}", [CompanyController::class, "destroy"]);
 });
 //User API and Refferences API
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'AuthApi'])->group(function () {
   //User API
   Route::get("/profile", [AuthController::class, "profile"]);
   Route::patch("/update-user", [AuthController::class, "update"]);
