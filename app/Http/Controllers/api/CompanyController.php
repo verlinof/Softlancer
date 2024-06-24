@@ -50,7 +50,7 @@ class CompanyController extends Controller
             $extension = $request->file('company_logo')->getClientOriginalExtension();
             $fileNameToStore = uniqid() . '.' . $extension;;
             $image = $request->file('company_logo')->storeAs('public/company_logo', $fileNameToStore);
-            $filenameDatabase = env("APP_URL") . '/storage/company_logo/' . $fileNameToStore;
+            $filenameDatabase = env('APP_URL') . '/storage/company_logo/' . $fileNameToStore;
             $company = Company::create([
                 'company_name' => $request->company_name,
                 'company_description' => $request->company_description,
@@ -117,7 +117,7 @@ class CompanyController extends Controller
                 $extension = $request->file('company_logo')->getClientOriginalExtension();
                 $fileNameToStore = uniqid() . '.' . $extension;;
                 $request->file('company_logo')->storeAs('public/company_logo', $fileNameToStore);
-                $filenameDatabase = 'storage/company_logo/' . $fileNameToStore;
+                $filenameDatabase = env('APP_URL') . '/storage/company_logo/' . $fileNameToStore;
                 $request['company_logo'] = $filenameDatabase;
 
                 File::delete($company->company_logo);
@@ -156,7 +156,6 @@ class CompanyController extends Controller
             Storage::delete($company->company_logo);
             $company->delete();
             return response()->json([
-                'success' => true,
                 'message' => 'Company deleted successfully'
             ], 200);
         } catch (ModelNotFoundException $e) {
