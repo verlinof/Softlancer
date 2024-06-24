@@ -156,6 +156,7 @@ class CompanyController extends Controller
             Storage::delete($company->company_logo);
             $company->delete();
             return response()->json([
+                'success' => true,
                 'message' => 'Company deleted successfully'
             ], 200);
         } catch (ModelNotFoundException $e) {
