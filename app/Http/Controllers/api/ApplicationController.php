@@ -42,6 +42,25 @@ class ApplicationController extends Controller
         }
     }
 
+    public function showById($id)
+    {
+        try {
+            $application = Application::findOrFail($id);
+            return new ApplicationResource($application->loadMissing("user", "project", "role"));
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'error' => 'Application not found'
+            ], 404);
+        } catch (QueryException $e) {
+            return response()->json([
+                'error' => 'Database Error'
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => 'Internal Server Error'
+            ], 500);
+        }
+    }
 
     /**
      * Display all the Application data or Display a listing of the resource.
