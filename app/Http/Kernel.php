@@ -67,6 +67,7 @@ class Kernel extends HttpKernel
         'AdminAccessAPI' => \App\Http\Middleware\AdminAccessAPI::class,
         'AuthApi' => \App\Http\Middleware\AuthenticationApi::class,
         'ApplicationOwnerAPI' => \App\Http\Middleware\ApplicationOwnerAPI::class,
+        'cacheResponse' => \Spatie\ResponseCache\Middlewares\CacheResponse::class,
+        'doNotCacheResponse' => \Spatie\ResponseCache\Middlewares\DoNotCacheResponse::class,
     ];
 }
-    

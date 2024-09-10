@@ -1,9 +1,7 @@
 <?php
 
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 //     return view('/main.blade.php');
 // });
 
-Route::get("/", function () {
+Route::get('/', function () {
     return view('main');
 });
 

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\api;
 
+use Exception;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
-use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
-use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class RoleController extends Controller
 {
@@ -20,7 +20,8 @@ class RoleController extends Controller
             $roles = Role::all();
 
             return response()->json([
-                "data" => $roles
+                "data" => $roles,
+                "query" => $roles->count()
             ]);
         } catch (Exception $e) {
             return response()->json([
@@ -43,7 +44,7 @@ class RoleController extends Controller
             return response()->json([
                 "message" => "Role created successfully",
                 "data" => $role
-            ]);
+            ])->header("x-cache", "true");
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Internal Server Error',

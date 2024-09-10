@@ -8,6 +8,8 @@ use App\Http\Controllers\api\ProjectRoleController;
 use App\Http\Controllers\api\RefferenceController;
 use App\Http\Controllers\api\RoleController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 
 //Authentication API
 // Route::get('/auth/google/redirect', [AuthController::class, 'redirectGoogle']);
@@ -60,7 +62,25 @@ Route::middleware(['auth:sanctum', 'AuthApi'])->group(function () {
   Route::delete("/refferences/{id}", [RefferenceController::class, "destroy"]);
 });
 //Roles API
-Route::get("/roles", [RoleController::class, "index"]);
+Route::get("/roles", [RoleController::class, "index"])->middleware(['cacheResponse:300']);
 Route::post("/roles", [RoleController::class, "store"])->middleware(['auth:sanctum', 'AdminAccessAPI']);
 //ProjectRole API
 Route::get("/project-roles", [ProjectRoleController::class, "show"]);
+
+Route::get('/test-memcached', function () {
+  Cache::put('key', 'value', 10); // 10 minutes
+  $value = Cache::get('key');
+  return response()->json([
+    'data' => $value,
+    'status' => 'success',
+  ]);
+});
+
+Route::get('/test-redis', function () {
+  Redis::set('key', 'value');
+  $value = Redis::get('key');
+  return response()->json([
+    'data' => $value,
+    'status' => 'success',
+  ]);
+});
