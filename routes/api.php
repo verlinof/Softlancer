@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Cache;
 // Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 
 //Projects API
 Route::get("/projects", [ProjectController::class, "index"]);

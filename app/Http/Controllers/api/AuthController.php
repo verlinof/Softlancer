@@ -10,6 +10,8 @@ use Exception;
 use Google_Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -34,50 +36,76 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
-            $token = $request->token;
+            $validated = Validator::make($request->all(), [
+                'username' => 'required|max:191',
+                'password' => 'required|max:191'
+            ]);
 
-            $client = new Google_Client(['client_id' => env('GOOGLE_CLIENT_ID')]);
-            $payload = $client->verifyIdToken($token);
-
-            if ($payload) {
-                $googleId = $payload['sub'];
-                $email = $payload['email'];
-                $name = $payload['name'];
-                $avatar = $payload['picture'];
-
-                // Find or create the user
-                $user = User::where('google_id', $googleId)->first();
-
-                if (!$user) {
-                    $user = User::updateOrCreate([
-                        'google_id' => $googleId,
-                    ], [
-                        'name' => $name,
-                        'email' => $email,
-                        'avatar' => $avatar,
-                        'is_admin' => false,
-                    ]);
-                }
-
-                // Token for API and User Credentials
-                $token = $user->createToken($user->name)->plainTextToken;
-                $data = [
-                    'user' => $user,
-                    'token' => $token,
-                ];
-
-                return response()->json($data, 200);
+            if ($validated->fails()) {
+                return response()->json([
+                    'message' => $validated->errors()
+                ]);
             }
-            return response()->json(['error' => 'Invalid token'], 401);
+
+            $user = User::where('username', $request->username)->first();
+
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                throw ValidationException::withMessages([
+                    'The provided credentials are incorrect.',
+                ]);
+            }
+
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            $data = [
+                'message' => 'Successfully logged in',
+                'token' => $token
+            ];
+
+            return response()->json($data, 200);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
         } catch (Exception $e) {
-            return response()->json(['error' => 'Error: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Internal Server Error'], 500);
+        }
+    }
+
+    public function register(Request $request)
+    {
+        try {
+            $validated = Validator::make($request->all(), [
+                'username' => 'required|max:191',
+                'email' => 'required|email',
+                'password' => 'required|min:5|max:191'
+            ]);
+
+            if ($validated->fails()) {
+                return response()->json([
+                    'message' => $validated->errors()
+                ]);
+            }
+
+            $user = User::create([
+                'username' => $request->username,
+                'email' => $request->email,
+                'password' => Hash::make($request->password)
+            ]);
+
+            $data = [
+                'message' => 'Successfully registered',
+                'data' => $user
+            ];
+
+            return response()->json($data, 200);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Internal Server Error'], 500);
         }
     }
 
     public function logout(Request $request)
     {
         try {
-            $username = $request->user()->name;
+            $username = $request->user()->username;
 
             // Revoke current user API Token
             $request->user()->currentAccessToken()->delete();
@@ -147,55 +175,6 @@ class AuthController extends Controller
             ], 500);
         }
     }
-
-    // public function redirectGoogle()
-    // {
-    //     return Socialite::driver("google")->stateless()->redirect();
-    // }
-
-    // public function googleCallback()
-    // {
-    //     $socialUser = Socialite::driver("google")->stateless()->user();
-    //     dd($socialUser);
-
-    //     $user = User::where('google_id', $socialUser->id)->first();
-
-    //     if (!$user) {
-    //         $user = User::updateOrCreate([
-    //             'google_id' => $socialUser->id,
-    //         ], [
-    //             'name' => $socialUser->name,
-    //             'email' => $socialUser->email,
-    //             'google_token' => $socialUser->token,
-    //             'google_refresh_token' => $socialUser->refreshToken,
-    //             'is_admin' => false
-    //         ]);
-
-    //         //Token for API and User Credentials
-    //         $token = $user->createToken($user->name)->plainTextToken;
-    //         $data = [
-    //             'user' => new UserDetailResource($user),
-    //             'token' => $token
-    //         ];
-
-    //         //Encode data Token API
-    //         $json_data = json_encode($data);
-
-    //         return redirect('http://127.0.0.1:8000/login/google/callback?token=' . urlencode($json_data));
-    //     }
-
-    //     //Token for API and User Credentials
-    //     $token = $user->createToken($user->name)->plainTextToken;
-    //     $data = [
-    //         'user' => new UserDetailResource($user),
-    //         'token' => $token
-    //     ];
-
-    //     //Encode data Token API
-    //     $json_data = json_encode($data);
-
-    //     return redirect('http://127.0.0.1:8000/login/google/callback?token=' . urlencode($json_data));
-    // }
 
     /**
      * Remove the specified resource from storage.

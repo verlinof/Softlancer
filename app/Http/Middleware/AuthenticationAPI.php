@@ -18,7 +18,9 @@ class AuthenticationAPI
     if (!auth()->user()) {
       return response()->json([
         'message' => 'Unauthorized',
-      ], 401);
+      ], 401)->withHeaders([
+        "Accept" => "application/json",
+      ]);
     }
     return $next($request);
   }
