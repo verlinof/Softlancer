@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Project extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
 
     public $timestamps = false;
 
@@ -22,6 +23,14 @@ class Project extends Model
         'end_date',
         'status'
     ];
+
+    public function toSearchableArray()
+    {
+        return [
+            'project_title' => $this->project_title,
+            'project_description' => $this->project_description,
+        ];
+    }
 
     public function projectRole()
     {

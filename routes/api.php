@@ -15,11 +15,24 @@ use Illuminate\Support\Facades\Cache;
 // Route::get('/auth/google/redirect', [AuthController::class, 'redirectGoogle']);
 // Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('doNotCacheResponse');
+Route::post('/register', [AuthController::class, 'register'])->middleware('doNotCacheResponse');
 
+//User API and Refferences API
+Route::middleware(['auth:sanctum', 'AuthApi'])->group(function () {
+  //User API
+  Route::get("/profile", [AuthController::class, "profile"])->middleware('doNotCacheResponse');
+  Route::patch("/update-user", [AuthController::class, "update"])->middleware('doNotCacheResponse');
+  Route::get("/logout", [AuthController::class, "logout"])->middleware('doNotCacheResponse');
+  //Refferences API
+  Route::get("/refferences", [RefferenceController::class, "index"]);
+  Route::post("/refferences", [RefferenceController::class, "store"]);
+  Route::get("/profile-refferences", [RefferenceController::class, "showByUser"]);
+  Route::delete("/refferences/{id}", [RefferenceController::class, "destroy"]);
+});
 //Projects API
-Route::get("/projects", [ProjectController::class, "index"]);
+Route::get("/projects", [ProjectController::class, "index"])->middleware('cacheResponse:projects');
+Route::get("/projects/search", [ProjectController::class, "search"])->middleware('cacheResponse:projects');
 Route::get("/projects/{id}", [ProjectController::class, "show"]);
 Route::middleware(['auth:sanctum', 'AdminAccessAPI'])->group(function () {
   Route::get("/users", [AuthController::class, "index"]);
@@ -50,20 +63,8 @@ Route::middleware(['auth:sanctum', 'AdminAccessAPI'])->group(function () {
   Route::post("/company/{id}", [CompanyController::class, "update"]);
   Route::delete("/company/{id}", [CompanyController::class, "destroy"]);
 });
-//User API and Refferences API
-Route::middleware(['auth:sanctum', 'AuthApi'])->group(function () {
-  //User API
-  Route::get("/profile", [AuthController::class, "profile"]);
-  Route::patch("/update-user", [AuthController::class, "update"]);
-  Route::get("/logout", [AuthController::class, "logout"]);
-  //Refferences API
-  Route::get("/refferences", [RefferenceController::class, "index"]);
-  Route::post("/refferences", [RefferenceController::class, "store"]);
-  Route::get("/profile-refferences", [RefferenceController::class, "showByUser"]);
-  Route::delete("/refferences/{id}", [RefferenceController::class, "destroy"]);
-});
 //Roles API
-Route::get("/roles", [RoleController::class, "index"])->middleware(['cacheResponse:300']);
+Route::get("/roles", [RoleController::class, "index"]);
 Route::post("/roles", [RoleController::class, "store"])->middleware(['auth:sanctum', 'AdminAccessAPI']);
 //ProjectRole API
 Route::get("/project-roles", [ProjectRoleController::class, "show"]);

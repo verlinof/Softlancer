@@ -93,6 +93,7 @@ class ProjectController extends Controller
             $references = Refference::whereIn('role_id', $request->roles)->pluck('user_id');
             $user = User::whereIn('id', $references)->get();
             $data = $user->pluck('id');
+
             dispatch(new ProjectNotificationJob($data));
 
             return response()->json([
@@ -279,5 +280,17 @@ class ProjectController extends Controller
                 'error' => 'Error: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        // Perform the search
+        $posts = Project::search($query)->get();
+
+        return response()->json([
+            'data' => $posts
+        ], 200);
     }
 }
